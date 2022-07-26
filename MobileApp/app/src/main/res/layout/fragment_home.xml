@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#25F783AF"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:background="@drawable/searchbar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp">
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:indeterminateOnly="false"
+            android:progressDrawable="@drawable/progressbar"
+            tools:progress="60" />
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/progress_bar"
+            android:layout_alignEnd="@+id/progress_bar"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="27dp"
+            android:layout_marginBottom="84dp"
+            android:gravity="center|center_horizontal|center_vertical"
+            app:icon="@drawable/baseline_directions_walk_24"
+            app:iconTint="@color/gray_dark" />
+
+        <TextView
+            android:id="@+id/text_view_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/progress_bar"
+            android:layout_alignEnd="@+id/progress_bar"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="54dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="54dp"
+            android:layout_marginBottom="58dp"
+            android:text="60"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/gray_dark"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/progress_bar"
+            android:layout_alignEnd="@+id/progress_bar"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="47dp"
+            android:layout_marginTop="93dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginBottom="38dp"
+            android:text="steps"
+            android:textAlignment="center"
+            android:textColor="@color/gray_dark" />
+
+        <!--        <com.mikhaellopez.circularprogressbar.CircularProgressBar-->
+        <!--            android:id="@+id/circularProgressBar"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            app:cpb_background_progressbar_color="#b6bbd8"-->
+        <!--            app:cpb_background_progressbar_width="5dp"-->
+        <!--            app:cpb_progress_direction="to_right"-->
+        <!--            app:cpb_progressbar_color="#3f51b5"-->
+        <!--            app:cpb_progressbar_width="10dp"-->
+        <!--            app:cpb_round_border="false" />-->
+
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/layout1"
+        android:layout_marginLeft="30dp"
+        android:textSize="17sp"
+        android:layout_marginTop="20dp"
+        android:text="Hello there!"
+        android:textColor="#3F3E3E"
+        android:id="@+id/text2"
+        android:fontFamily="@font/baloo2_semibold"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/text2"
+        android:layout_marginTop="190dp"
+        android:background="@drawable/main_back"
+        android:id="@+id/layout2"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="100dp"
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:id="@+id/recyclerView"
+                />
+        </RelativeLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="250dp"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="10dp"
+            app:cardBackgroundColor="#E53935"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="50dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donate"
+                android:textColor="#F0FFFFFF"
+                android:drawableLeft="@drawable/heart"
+                android:drawablePadding="10dp"
+                android:drawableTint="#E8FFFFFF"
+                android:gravity="center"
+                android:layout_gravity="center|center_vertical"
+                android:fontFamily="@font/baloo2_semibold"
+                android:textSize="17sp"
+                />
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
