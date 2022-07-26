@@ -1,17 +1,30 @@
 package elfak.mosis.health.ui.home
 
+import android.Manifest
+import android.app.ActivityManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.ActivityNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentHomeBinding
+import elfak.mosis.health.ui.stepcounter.StepCounterService
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
 
 
 class HomeFragment : Fragment() {
@@ -24,6 +37,8 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        activity?.registerReceiver(stepCountReceiver, IntentFilter("broadcast_steps"))
 
     }
 
@@ -52,6 +67,19 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerView.adapter = HomeAdapter(requireContext())
 
+        if (!StepCounterService.checkPermission(view.context)) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+                1
+            )
+        }
+
+        if (!checkStepCountServiceRunning()) {
+            val serviceIntent = Intent(view.context, StepCounterService().javaClass)
+            requireActivity().startService(serviceIntent)
+        }
+
 //        val circularProgressBar = view.findViewById<CircularProgressBar>(R.id.circularProgressBar)
 //
 //        circularProgressBar.apply {
@@ -61,15 +89,50 @@ class HomeFragment : Fragment() {
 //
 //        }
 
-        binding.progressBar.progress = 35
-        binding.textViewProgress.text = "35%"
+
+        val prefs = SharedPreferencesHelper.customPreference(view.context, "Step_data")
 
 
+        binding.progressBar.progress = prefs.stepCount
+        binding.textViewProgress.text = prefs.stepCount.toString()
+        binding.progressBar.max = 10000
 
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        activity?.unregisterReceiver(stepCountReceiver)
+    }
+
+    private fun checkStepCountServiceRunning(): Boolean {
+        val activityManager =
+            requireContext().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
+            if (StepCounterService::class.simpleName == service.service.className) {
+                Log.e("MAP", "Step Count Service already running.")
+                return true
+            }
+        }
+        return false
+    }
+
+    private val stepCountReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val bundle = intent.extras
+            if (bundle != null) {
+                if (bundle.containsKey("steps")) {
+                    val stepCount = bundle.getString("steps")
+                    if (stepCount != null) {
+                        binding.progressBar.progress = stepCount.toInt()
+                        binding.textViewProgress.text = stepCount.toString()
+                    }
+                    Log.e("MainActivity--", "token--$stepCount")
+
+                }
+            }
+        }
+
     }
 }
