@@ -9,7 +9,16 @@
         android:id="@+id/nav_home"
         android:name="elfak.mosis.health.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action android:id="@+id/action_HomeFragment_to_GalleryFragment"
+            app:destination="@id/nav_gallery" />
+
+        <action android:id="@+id/action_HomeFragment_to_SleepFragment"
+            app:destination="@id/SleepFragment" />
+
+        <action android:id="@+id/action_HomeFragment_to_HeartRateFragment"
+            app:destination="@id/HeartRateFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -22,4 +31,17 @@
         android:name="elfak.mosis.health.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/SleepFragment"
+        android:name="elfak.mosis.health.ui.sleep.SleepFragment"
+        android:label="Sleep Data"
+        tools:layout="@layout/fragment_sleep" />
+
+    <fragment
+        android:id="@+id/HeartRateFragment"
+        android:name="elfak.mosis.health.ui.heartrate.HeartRateFragment"
+        android:label="Heart rate"
+        tools:layout="@layout/fragment_heart_rate" />
+
 </navigation>
