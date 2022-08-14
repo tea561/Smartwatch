@@ -99,11 +99,15 @@ class HomeFragment : Fragment() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.unregisterReceiver(stepCountReceiver)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        activity?.unregisterReceiver(stepCountReceiver)
     }
 
     private fun checkStepCountServiceRunning(): Boolean {

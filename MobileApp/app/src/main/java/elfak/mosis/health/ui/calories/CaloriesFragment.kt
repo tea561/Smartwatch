@@ -1,4 +1,4 @@
-package elfak.mosis.health.ui.sleep
+package elfak.mosis.health.ui.calories
 
 import android.graphics.Color
 import android.os.Bundle
@@ -6,17 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.formatter.ValueFormatter
 import elfak.mosis.health.R
+import elfak.mosis.health.ui.sleep.MyXAxisFormatter
+import elfak.mosis.health.ui.sleep.MyYAxisFormatter
 
-class SleepFragment : Fragment() {
+
+class CaloriesFragment : Fragment() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -26,7 +28,7 @@ class SleepFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sleep, container, false)
+        return inflater.inflate(R.layout.fragment_calories, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +41,6 @@ class SleepFragment : Fragment() {
         chart.xAxis.valueFormatter = MyXAxisFormatter()
         chart.xAxis.setDrawAxisLine(true)
         chart.axisLeft.setDrawAxisLine(false)
-        chart.axisLeft.valueFormatter = MyYAxisFormatter()
         chart.xAxis.gridColor = Color.parseColor("#C0C0C0")
         chart.axisLeft.gridColor = Color.parseColor("#C0C0C0")
         chart.axisLeft.setDrawGridLines(false)
@@ -48,48 +49,26 @@ class SleepFragment : Fragment() {
         chart.description.isEnabled = false
 
         chart.axisLeft.axisMinimum = 0f
-        chart.axisLeft.axisMaximum = 12f
-        chart.axisLeft.gridLineWidth = 2f
         chart.xAxis.axisMinimum = -0.5f
         chart.xAxis.axisMaximum = 6.5f
         chart.xAxis.gridLineWidth = 1f
 
 
         val entries = ArrayList<BarEntry>()
-        entries.add(BarEntry(0f, 8f))
-        entries.add(BarEntry(1f, 7.5f))
-        entries.add(BarEntry(2f, 8.3f))
-        entries.add(BarEntry(3f, 4.2f))
-        entries.add(BarEntry(6f, 6.3f))
+        entries.add(BarEntry(0f, 234f))
+        entries.add(BarEntry(1f, 124f))
+        entries.add(BarEntry(2f, 542f))
+        entries.add(BarEntry(3f, 331f))
+        entries.add(BarEntry(6f, 329f))
 
         val dataSet = BarDataSet(entries, "Label")
-        dataSet.color = Color.parseColor("#efdd32")
-        dataSet.valueTextColor = Color.parseColor("#dd987a")
-
+        dataSet.color = ContextCompat.getColor(view.context, R.color.green_light)
+        dataSet.valueTextSize = 12f
         val barData = BarData(dataSet)
         barData.barWidth = 0.9f
         chart.data = barData
         chart.setFitBars(true)
         chart.invalidate()
 
-    }
-
-    fun setChartDate() {
-
-    }
-
-}
-
-class MyXAxisFormatter : ValueFormatter() {
-    private val days = arrayOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        return days.getOrNull(value.toInt()) ?: value.toString()
-    }
-}
-
-class MyYAxisFormatter : ValueFormatter() {
-    private val values = arrayOf("0hr", "1hr", "2hr", "3hr", "4hr", "5hr", "6hr", "7hr", "8hr", "9hr", "10hr", "11hr", "12hr")
-    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        return values.getOrNull(value.toInt()) ?: value.toString()
     }
 }

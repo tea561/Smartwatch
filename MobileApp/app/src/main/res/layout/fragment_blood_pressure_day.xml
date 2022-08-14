@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="clip_vertical"
+    android:orientation="vertical"
+    tools:context=".ui.heartrate.HeartRateWeekFragment">
+
+    <LinearLayout
+        android:layout_width="393dp"
+        android:layout_height="166dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rectangle"
+        android:backgroundTint="@color/blue"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" 17 Jan 2022 22:30h"
+            android:textAlignment="viewStart"
+            android:textColor="@color/gray_light"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="155dp"
+                android:layout_height="130dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/progressbar"
+                android:backgroundTint="#66FFFFFF"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewSysLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SYS"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textViewSysValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="125"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="48sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="155dp"
+                android:layout_height="130dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/progressbar"
+                android:backgroundTint="#66FFFFFF"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewDiasLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DIAS"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/textViewDiasValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="81"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="48sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/blood_pressure_day_chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

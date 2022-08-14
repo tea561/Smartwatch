@@ -18,6 +18,12 @@
 
         <action android:id="@+id/action_HomeFragment_to_HeartRateFragment"
             app:destination="@id/HeartRateFragment" />
+
+        <action android:id="@+id/action_HomeFragment_to_BloodPressureFragment"
+            app:destination="@id/BloodPressureFragment" />
+
+        <action android:id="@+id/action_HomeFragment_to_CaloriesFragment"
+            app:destination="@id/CaloriesFragment" />
     </fragment>
 
     <fragment
@@ -43,5 +49,17 @@
         android:name="elfak.mosis.health.ui.heartrate.HeartRateFragment"
         android:label="Heart rate"
         tools:layout="@layout/fragment_heart_rate" />
+
+    <fragment
+        android:id="@+id/BloodPressureFragment"
+        android:name="elfak.mosis.health.ui.bloodpressure.BloodPressureFragment"
+        android:label="Blood pressure"
+        tools:layout="@layout/fragment_blood_pressure" />
+
+    <fragment
+        android:id="@+id/CaloriesFragment"
+        android:name="elfak.mosis.health.ui.calories.CaloriesFragment"
+        android:label="Calories burnt"
+        tools:layout="@layout/fragment_calories" />
 
 </navigation>

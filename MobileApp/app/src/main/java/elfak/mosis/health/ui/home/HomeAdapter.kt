@@ -47,12 +47,18 @@ class HomeAdapter(context: Context) : RecyclerView.Adapter<HomeAdapter.MyAdapter
             holder.image1.setImageResource(R.drawable.bloodpressure)
             holder.back.setBackgroundColor(Color.parseColor("#F2AF4576"))
             holder.text.text = "Everyday door to door visit"
+            holder.back.setOnClickListener (
+                Navigation.createNavigateOnClickListener(R.id.action_HomeFragment_to_BloodPressureFragment)
+            )
         }
         if (position == 3) {
             holder.image.setImageResource(R.drawable.exercise)
             holder.image1.setImageResource(R.drawable.fire)
             holder.back.setBackgroundColor(Color.parseColor("#F2EEAA45"))
             holder.text.text = "Organize local events"
+            holder.back.setOnClickListener (
+                Navigation.createNavigateOnClickListener(R.id.action_HomeFragment_to_CaloriesFragment)
+            )
         }
     }
 
