@@ -11,20 +11,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.ActivityNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mikhaellopez.circularprogressbar.CircularProgressBar
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentHomeBinding
 import elfak.mosis.health.ui.stepcounter.StepCounterService
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 class HomeFragment : Fragment() {
@@ -34,6 +40,7 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var values: MutableList<String> = mutableListOf("0", "0", "0", "0")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +72,54 @@ class HomeFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerView.adapter = HomeAdapter(requireContext())
+        val homeAdapter = HomeAdapter(requireContext(), values)
+        recyclerView.adapter = homeAdapter
+
+        //http
+        val queue = Volley.newRequestQueue(view.context)
+//        var url = "https://www.google.com"
+//
+//        // Request a string response from the provided URL.
+//        val stringRequest = StringRequest(
+//            Request.Method.GET, url,
+//            Response.Listener<String> { response ->
+//                // Display the first 500 characters of the response string.
+//                Log.i("HTTP","Response is: ${response.substring(0, 500)}")
+//            },
+//            Response.ErrorListener { Log.i("HTTP", "That didn't work!") })
+//
+//
+//        queue.add(stringRequest)
+
+
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
+        val url2 = "http://localhost:5000/api/Gateway/GetParameters/9"
+
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url2, null,
+            Response.Listener { response ->
+                Log.i("HTTP", "Response: %s".format(response.toString()))
+                val sys = response["sys"]
+                val pulse = response["pulse"]
+                val dias = response["dias"]
+                values[0] = pulse.toString()
+                values[1] = "${sys.toString()}/${dias.toString()}"
+                homeAdapter.notifyItemChanged(0)
+                homeAdapter.notifyItemChanged(1)
+
+            },
+            Response.ErrorListener { error ->
+                Log.i("HTTP", "Error: ${error.toString()}")
+            }
+        )
+
+        jsonObjectRequest.retryPolicy = DefaultRetryPolicy(
+                5000,
+        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+
+// Access the RequestQueue through your singleton class.
+        queue.add(jsonObjectRequest)
 
         if (!StepCounterService.checkPermission(view.context)) {
             ActivityCompat.requestPermissions(
@@ -74,6 +128,7 @@ class HomeFragment : Fragment() {
                 1
             )
         }
+
 
         if (!checkStepCountServiceRunning()) {
             val serviceIntent = Intent(view.context, StepCounterService().javaClass)
@@ -137,6 +192,32 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+
+    }
+
+    fun sendGetRequest() {
+        val url = URL("http://www.android.com/")
+        with(url.openConnection() as HttpURLConnection) {
+            requestMethod = "GET"
+
+            Log.i("HTTP", "Url: $url")
+            Log.i("HTTP", "Response code: $responseCode")
+
+            BufferedReader(InputStreamReader(inputStream)).use {
+                val response = StringBuffer()
+
+                var inputLine = it.readLine()
+                while(inputLine != null) {
+                    response.append(inputLine)
+                    inputLine = it.readLine()
+                }
+                it.close()
+                println("Response: $response")
+            }
+        }
+    }
+
+    fun sendVolleyRequest() {
 
     }
 }
