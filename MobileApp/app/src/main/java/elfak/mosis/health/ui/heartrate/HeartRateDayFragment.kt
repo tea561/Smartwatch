@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -15,6 +18,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import elfak.mosis.health.R
 
 class HeartRateDayFragment : Fragment() {
+
+    private val heartRateViewModel:  HeartRateViewModel by activityViewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -31,6 +37,7 @@ class HeartRateDayFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val chart = view.findViewById<LineChart>(R.id.bpm_day_chart)
+        heartRateViewModel.getDailyData(view.context)
 
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -40,31 +47,40 @@ class HeartRateDayFragment : Fragment() {
         chart.description.isEnabled = false
         chart.setBorderWidth(5f)
         chart.xAxis.axisMinimum = 0f
-        chart.xAxis.axisMaximum = 7f
+        chart.xAxis.axisMaximum = 24f
         chart.xAxis.gridLineWidth = 1f
 
-        val entries = ArrayList<Entry>()
-        entries.add(Entry(0f, 110f))
-        entries.add(Entry(1f, 100f))
-        entries.add(Entry(2f, 75f))
-        entries.add(Entry(3f, 80f))
-        entries.add(Entry(4f, 95f))
-        entries.add(Entry(5f, 78f))
-        entries.add(Entry(6f, 95f))
+        val fetchingStateObserver = Observer<FetchingState> { state ->
+            if(state == FetchingState.Success) {
+                val dataEntries = heartRateViewModel.dailyEntries
 
-        val dataSet: LineDataSet = LineDataSet(entries, "label")
-        dataSet.color = Color.parseColor("#ff084a")
-        dataSet.lineWidth = 2f
-        dataSet.setDrawValues(false)
-        dataSet.setCircleColor(Color.parseColor("#ff084a"))
+                val dataSet: LineDataSet = LineDataSet(dataEntries, "label")
+                dataSet.color = Color.parseColor("#ff084a")
 
-        dataSet.setDrawCircleHole(false)
-        dataSet.circleRadius = 5f
-        dataSet.setDrawFilled(true)
-        dataSet.fillDrawable = ContextCompat.getDrawable(view.context, R.drawable.gradient)
+                dataSet.lineWidth = 2f
+                dataSet.setDrawValues(false)
+                dataSet.setCircleColor(Color.parseColor("#ff084a"))
 
-        val lineData: LineData = LineData(dataSet)
-        chart.data = lineData
-        chart.invalidate()
+                dataSet.setDrawCircleHole(false)
+                dataSet.circleRadius = 5f
+                dataSet.setDrawFilled(true)
+                dataSet.fillDrawable = ContextCompat.getDrawable(view.context, R.drawable.gradient)
+
+                val lineData: LineData = LineData(dataSet)
+                chart.data = lineData
+                chart.invalidate()
+            }
+            if(state is FetchingState.FetchingError) {
+                Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        heartRateViewModel.fetchingDailyDataState.observe(viewLifecycleOwner, fetchingStateObserver)
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        heartRateViewModel.fetchingDailyDataState.removeObservers(viewLifecycleOwner)
     }
 }

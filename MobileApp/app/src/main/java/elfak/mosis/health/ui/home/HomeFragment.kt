@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +21,11 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentHomeBinding
+import elfak.mosis.health.ui.bloodpressure.BloodPressureViewModel
+import elfak.mosis.health.ui.heartrate.HeartRateViewModel
 import elfak.mosis.health.ui.stepcounter.StepCounterService
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
@@ -36,10 +38,12 @@ import java.net.URL
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private val bloodPressureViewModel: BloodPressureViewModel by activityViewModels()
+    private val heartRateViewModel: HeartRateViewModel by activityViewModels()
+
+
     private var values: MutableList<String> = mutableListOf("0", "0", "0", "0")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +62,7 @@ class HomeFragment : Fragment() {
             ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,21 +75,6 @@ class HomeFragment : Fragment() {
 
         //http
         val queue = Volley.newRequestQueue(view.context)
-//        var url = "https://www.google.com"
-//
-//        // Request a string response from the provided URL.
-//        val stringRequest = StringRequest(
-//            Request.Method.GET, url,
-//            Response.Listener<String> { response ->
-//                // Display the first 500 characters of the response string.
-//                Log.i("HTTP","Response is: ${response.substring(0, 500)}")
-//            },
-//            Response.ErrorListener { Log.i("HTTP", "That didn't work!") })
-//
-//
-//        queue.add(stringRequest)
-
-
         //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
         val url2 = "http://localhost:5000/api/Gateway/GetParameters/9"
 
@@ -101,10 +84,15 @@ class HomeFragment : Fragment() {
                 val sys = response["sys"]
                 val pulse = response["pulse"]
                 val dias = response["dias"]
+                val time = response["timestamp"]
+
+                bloodPressureViewModel.updateLastValues(sys as Int, dias as Int, time as Long)
+                heartRateViewModel.updateLastValues(pulse as Int, time.toLong())
+
                 values[0] = pulse.toString()
-                values[1] = "${sys.toString()}/${dias.toString()}"
+                values[2] = "${sys.toString()}/${dias.toString()}"
                 homeAdapter.notifyItemChanged(0)
-                homeAdapter.notifyItemChanged(1)
+                homeAdapter.notifyItemChanged(2)
 
             },
             Response.ErrorListener { error ->
@@ -118,7 +106,7 @@ class HomeFragment : Fragment() {
         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         )
 
-// Access the RequestQueue through your singleton class.
+        // Access the RequestQueue through your singleton class.
         queue.add(jsonObjectRequest)
 
         if (!StepCounterService.checkPermission(view.context)) {

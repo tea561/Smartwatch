@@ -52,42 +52,6 @@ class HomeAdapter(context: Context, values: List<String>) : RecyclerView.Adapter
         holder.back.setOnClickListener (
             Navigation.createNavigateOnClickListener(actions[position])
                 )
-//        if (position == 0) {
-//            holder.image.setImageResource(R.drawable.heartrate2)
-//            holder.image1.setImageResource(R.drawable.solidheart)
-//            holder.back.setBackgroundColor(Color.parseColor("#E6E53935"))
-//            holder.text.text = "Donate blood every year"
-//            holder.back.setOnClickListener (
-//                Navigation.createNavigateOnClickListener(R.id.action_HomeFragment_to_HeartRateFragment)
-//            )
-//        }
-//        if (position == 1) {
-//            holder.image.setImageResource(R.drawable.zzz)
-//            holder.image1.setImageResource(R.drawable.baseline_nightlight_round_24)
-//            holder.back.setBackgroundColor(Color.parseColor("#F236883A"))
-//            holder.text.text = "Large local volunteers"
-//            holder.back.setOnClickListener (
-//                Navigation.createNavigateOnClickListener(R.id.action_HomeFragment_to_SleepFragment)
-//            )
-//        }
-//        if (position == 2) {
-//            holder.image.setImageResource(R.drawable.arm)
-//            holder.image1.setImageResource(R.drawable.bloodpressure)
-//            holder.back.setBackgroundColor(Color.parseColor("#F2AF4576"))
-//            holder.text.text = "Everyday door to door visit"
-//            holder.back.setOnClickListener (
-//                Navigation.createNavigateOnClickListener(R.id.action_HomeFragment_to_BloodPressureFragment)
-//            )
-//        }
-//        if (position == 3) {
-//            holder.image.setImageResource(R.drawable.exercise)
-//            holder.image1.setImageResource(R.drawable.fire)
-//            holder.back.setBackgroundColor(R.color.purple)
-//            holder.text.text = "Organize local events"
-//            holder.back.setOnClickListener (
-//                Navigation.createNavigateOnClickListener(R.id.action_HomeFragment_to_CaloriesFragment)
-//            )
-//        }
     }
 
     override fun getItemCount(): Int {

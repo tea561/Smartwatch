@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -14,7 +17,18 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import elfak.mosis.health.R
+import elfak.mosis.health.databinding.FragmentBloodPressureDayBinding
+import elfak.mosis.health.ui.heartrate.FetchingState
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
 class BloodPressureDayFragment : Fragment() {
+
+    private val bloodPressureViewModel: BloodPressureViewModel by activityViewModels()
+    private var _binding: FragmentBloodPressureDayBinding? = null
+    private val binding get() = _binding!!
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -23,12 +37,17 @@ class BloodPressureDayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blood_pressure_day, container, false)
+        _binding = FragmentBloodPressureDayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val textViewDateTime = binding.textViewDateTime
+        textViewDateTime.text = bloodPressureViewModel.lastTime.value!!.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM))
+        binding.textViewDiasValue.text = bloodPressureViewModel.lastDiasValue.value.toString()
+        binding.textViewSysValue.text = bloodPressureViewModel.lastSysValue.value.toString()
 
         val chart = view.findViewById<LineChart>(R.id.blood_pressure_day_chart)
 
@@ -42,48 +61,65 @@ class BloodPressureDayFragment : Fragment() {
         chart.xAxis.axisMinimum = 0f
         chart.xAxis.axisMaximum = 24f
         chart.xAxis.gridLineWidth = 1f
+        bloodPressureViewModel.getDailySysData(view.context)
+
+        var sysEntries = ArrayList<Entry>()
+        var dataSetSys: LineDataSet = LineDataSet(sysEntries, "sys")
 
 
-        val entries = ArrayList<Entry>()
-        entries.add(Entry(1f, 110f))
-        entries.add(Entry(7f, 100f))
-        entries.add(Entry(13f, 125f))
-        entries.add(Entry(15f, 110f))
-        entries.add(Entry(18f, 108f))
-        entries.add(Entry(22f, 117f))
-        entries.add(Entry(23f, 115f))
+        val fetchingSysDataStateObserver = Observer<FetchingState> { state ->
+            if(state == FetchingState.Success) {
+                sysEntries = bloodPressureViewModel.dailySysEntries
 
-        val entries2 = ArrayList<Entry>()
-        entries2.add(Entry(1f, 80f))
-        entries2.add(Entry(7f, 75f))
-        entries2.add(Entry(13f, 85f))
-        entries2.add(Entry(15f, 81f))
-        entries2.add(Entry(18f, 78f))
-        entries2.add(Entry(22f, 83f))
-        entries2.add(Entry(23f, 88f))
+                dataSetSys = LineDataSet(sysEntries, "sys")
+                dataSetSys.color = ContextCompat.getColor(view.context, R.color.purple)
+                dataSetSys.lineWidth = 2f
+                dataSetSys.setDrawValues(false)
+                dataSetSys.circleRadius = 4f
+                dataSetSys.setCircleColor(dataSetSys.color)
+                dataSetSys.setDrawCircleHole(false)
 
-        val dataSetSys: LineDataSet = LineDataSet(entries, "sys")
-        dataSetSys.color = ContextCompat.getColor(view.context, R.color.purple)
-        dataSetSys.lineWidth = 2f
-        dataSetSys.circleRadius = 4f
-        dataSetSys.setCircleColor(dataSetSys.color)
-        dataSetSys.valueTextSize = 10f
-        dataSetSys.setDrawCircleHole(false)
+                bloodPressureViewModel.getDailyDiasData(view.context)
+            }
+            if(state is FetchingState.FetchingError) {
+                Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
-        val dataSetDias: LineDataSet = LineDataSet(entries2, "dias")
-        dataSetDias.color = ContextCompat.getColor(view.context,R.color.turquoise)
-        dataSetDias.lineWidth = 2f
-        dataSetDias.circleRadius = 4f
-        dataSetDias.setCircleColor(dataSetDias.color)
-        dataSetDias.valueTextSize = 10f
-        dataSetDias.setDrawCircleHole(false)
+        bloodPressureViewModel.fetchingDailySysState.observe(viewLifecycleOwner, fetchingSysDataStateObserver)
 
-        val dataSets = arrayListOf<ILineDataSet>()
-        dataSets.add(dataSetSys)
-        dataSets.add(dataSetDias)
+        val fetchingDiasDataStateObserver = Observer<FetchingState> { state ->
+            if(state == FetchingState.Success) {
+                val dataEntries = bloodPressureViewModel.dailyDiasEntries
 
-        val lineData = LineData(dataSets)
-        chart.data = lineData
-        chart.invalidate()
+                val dataSetDias: LineDataSet = LineDataSet(dataEntries, "dias")
+                dataSetDias.color = ContextCompat.getColor(view.context,R.color.turquoise)
+                dataSetDias.lineWidth = 2f
+                dataSetDias.circleRadius = 4f
+                dataSetDias.setCircleColor(dataSetDias.color)
+                dataSetDias.setDrawValues(false)
+                dataSetDias.setDrawCircleHole(false)
+
+                val dataSets = arrayListOf<ILineDataSet>()
+                dataSets.add(dataSetSys)
+                dataSets.add(dataSetDias)
+
+                val lineData = LineData(dataSets)
+                chart.data = lineData
+                chart.invalidate()
+            }
+            if(state is FetchingState.FetchingError) {
+                Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        bloodPressureViewModel.fetchingDailyDiasState.observe(viewLifecycleOwner, fetchingDiasDataStateObserver)
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bloodPressureViewModel.fetchingDailySysState.removeObservers(viewLifecycleOwner)
+        bloodPressureViewModel.fetchingDailyDiasState.removeObservers(viewLifecycleOwner)
     }
 }

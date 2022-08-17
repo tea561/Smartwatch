@@ -15,6 +15,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import elfak.mosis.health.R
+import java.time.LocalDate
 
 class SleepFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,9 +82,22 @@ class SleepFragment : Fragment() {
 }
 
 class MyXAxisFormatter : ValueFormatter() {
-    private val days = arrayOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    init {
+        setDays()
+    }
+    private lateinit var days: MutableList<String>
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         return days.getOrNull(value.toInt()) ?: value.toString()
+    }
+    private fun setDays(){
+        days = mutableListOf()
+        val today = LocalDate.now()
+        for (i in 6 downTo 1) {
+            val day = today.minusDays(i.toLong())
+                val dayName = day.dayOfWeek.toString()
+            days.add(dayName)
+        }
+        days.add(today.dayOfWeek.toString())
     }
 }
 
