@@ -73,5 +73,26 @@
         android:label="Calories burnt"
         tools:layout="@layout/fragment_calories" />
 
+    <fragment
+        android:id="@+id/BluetoothClientFragment"
+        android:name="elfak.mosis.health.ui.device.BluetoothClientFragment"
+        android:label="Bluetooth client"
+        tools:layout="@layout/fragment_bluetooth_client" />
+
+    <fragment
+        android:id="@+id/BluetoothServerFragment"
+        android:name="elfak.mosis.health.ui.device.BluetoothServerFragment"
+        android:label="Bluetooth server"
+        tools:layout="@layout/fragment_bluetooth_server" />
+
+    <fragment
+        android:id="@+id/AddNewDeviceFragment"
+        android:name="elfak.mosis.health.ui.device.AddDeviceFragment"
+        android:label="Devices"
+        tools:layout="@layout/fragment_add_device" >
+        <action android:id="@+id/action_AddNewDeviceFragment_to_BluetoothClientFragment"
+            app:destination="@id/BluetoothClientFragment" />
+    </fragment>
+
 
 </navigation>
