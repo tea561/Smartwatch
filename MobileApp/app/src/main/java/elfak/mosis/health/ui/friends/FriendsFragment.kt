@@ -1,32 +1,33 @@
 package elfak.mosis.health.ui.friends
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import elfak.mosis.health.R
+import elfak.mosis.health.ui.friends.model.FriendsViewModel
+import elfak.mosis.health.ui.user.data.User
+import elfak.mosis.health.ui.user.model.UserViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FriendsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FriendsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var columnCount = 1
+    private val friendsViewModel: FriendsViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
     }
 
@@ -34,26 +35,58 @@ class FriendsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false)
+
+        return inflater.inflate(R.layout.fragment_friends_list, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val recyclerViewRankings = view.findViewById<RecyclerView>(R.id.list)
+
+        friendsViewModel.friends.observe(viewLifecycleOwner){newData ->
+            if(newData.size < 1)
+            {
+                val noFriends: LinearLayout = view.findViewById(R.id.linearLayoutEmptyList)
+                noFriends.visibility = View.VISIBLE
+            }
+            else{
+                val noFriends: LinearLayout = view.findViewById(R.id.linearLayoutEmptyList)
+                noFriends.visibility = View.GONE
+                val rankingsAdapter = MyFriendRecyclerViewAdapter({ user -> openFriendProfile(user)}, emptyList())
+                recyclerViewRankings.adapter = rankingsAdapter
+                userViewModel.currentUser?.let { newData.add(it) }
+                rankingsAdapter.setData(newData)
+                Log.i("Rankings observer", newData.toString())
+            }
+        }
+
+        recyclerViewRankings.layoutManager = LinearLayoutManager(requireContext())
+
+
+        val buttonFindFriends : Button = view.findViewById(R.id.buttonNoFriends)
+        buttonFindFriends.setOnClickListener {
+            findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
+        }
+    }
+
+    private fun openFriendProfile(user: User){
+        //setFragmentResult("requestFriend", bundleOf("bundleFriend" to user.uid))
+        //TODO
+        //findNavController().navigate(R.id.action_RankingsFragment_to_ProfileFragment)
+        Log.i("CLICK ON FRIEND", user.username ?: "empty")
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FriendsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
+        // TODO: Customize parameter argument names
+        const val ARG_COLUMN_COUNT = "column-count"
+
+        // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(columnCount: Int) =
             FriendsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putInt(ARG_COLUMN_COUNT, columnCount)
                 }
             }
     }

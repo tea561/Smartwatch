@@ -94,5 +94,23 @@
             app:destination="@id/BluetoothClientFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/FriendsFragment"
+        android:name="elfak.mosis.health.ui.friends.FriendsFragment"
+        android:label="Friends"
+        tools:layout="@layout/fragment_friends" >
+        <action android:id="@+id/action_FriendsFragment_to_FindFriendFragment"
+            app:destination="@id/FindFriendFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/FindFriendFragment"
+        android:name="elfak.mosis.health.ui.friends.FindFriendFragment"
+        android:label="Find a Friend"
+        tools:layout="@layout/fragment_find_friend" >
+        <action android:id="@+id/action_FindFriendFragment_to_FriendsFragment"
+            app:destination="@id/FriendsFragment" />
+    </fragment>
+
 
 </navigation>
