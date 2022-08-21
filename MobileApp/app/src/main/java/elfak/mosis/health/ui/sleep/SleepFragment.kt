@@ -2,22 +2,33 @@ package elfak.mosis.health.ui.sleep
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import elfak.mosis.health.R
+import elfak.mosis.health.databinding.FragmentBloodPressureDayBinding
+import elfak.mosis.health.databinding.FragmentSleepBinding
+import elfak.mosis.health.ui.heartrate.FetchingState
 import java.time.LocalDate
+import java.util.concurrent.TimeUnit
 
 class SleepFragment : Fragment() {
+
+    private val sleepViewModel: SleepViewModel by activityViewModels()
+    private var _binding: FragmentSleepBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -26,14 +37,17 @@ class SleepFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sleep, container, false)
+        _binding = FragmentSleepBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.textViewTodayHours.text = sleepViewModel.lastValue.value
+
         val chart = view.findViewById<BarChart>(R.id.bar_chart)
+        sleepViewModel.getSleepData(view.context)
 
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
@@ -55,30 +69,35 @@ class SleepFragment : Fragment() {
         chart.xAxis.axisMaximum = 6.5f
         chart.xAxis.gridLineWidth = 1f
 
+        val fetchingStateObserver =  Observer<FetchingState> { state ->
+            if(state == FetchingState.Success) {
+                val dataEntries = sleepViewModel.weeklySleepEntries
 
-        val entries = ArrayList<BarEntry>()
-        entries.add(BarEntry(0f, 8f))
-        entries.add(BarEntry(1f, 7.5f))
-        entries.add(BarEntry(2f, 8.3f))
-        entries.add(BarEntry(3f, 4.2f))
-        entries.add(BarEntry(6f, 6.3f))
+                val dataSet = BarDataSet(dataEntries, "Label")
+                dataSet.color = Color.parseColor("#efdd32")
+                dataSet.valueTextColor = ContextCompat.getColor(view.context, R.color.black)
+                dataSet.valueFormatter = SleepHoursFormatter()
+                dataSet.valueTextSize = 10f
 
-        val dataSet = BarDataSet(entries, "Label")
-        dataSet.color = Color.parseColor("#efdd32")
-        dataSet.valueTextColor = Color.parseColor("#dd987a")
+                val barData = BarData(dataSet)
+                barData.barWidth = 0.9f
+                chart.data = barData
+                chart.setFitBars(true)
+                chart.invalidate()
+            }
+            if(state is FetchingState.FetchingError) {
+                Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
-        val barData = BarData(dataSet)
-        barData.barWidth = 0.9f
-        chart.data = barData
-        chart.setFitBars(true)
-        chart.invalidate()
+        sleepViewModel.fetchingSleepDataState.observe(viewLifecycleOwner, fetchingStateObserver)
 
     }
 
-    fun setChartDate() {
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        sleepViewModel.fetchingSleepDataState.removeObservers(viewLifecycleOwner)
     }
-
 }
 
 class MyXAxisFormatter : ValueFormatter() {
@@ -105,5 +124,20 @@ class MyYAxisFormatter : ValueFormatter() {
     private val values = arrayOf("0hr", "1hr", "2hr", "3hr", "4hr", "5hr", "6hr", "7hr", "8hr", "9hr", "10hr", "11hr", "12hr")
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         return values.getOrNull(value.toInt()) ?: value.toString()
+    }
+}
+
+class SleepHoursFormatter(): ValueFormatter() {
+    override fun getBarLabel(barEntry: BarEntry?): String {
+        return if(barEntry?.y != null) {
+            val minutes = barEntry.y * 60
+            val hours = TimeUnit.MINUTES.toHours(minutes.toLong())
+            val remainMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
+            Log.i("BAR_VAL", hours.toString())
+            Log.i("BAR_VAL", remainMinutes.toString())
+            String.format("%02d:%02d", hours, remainMinutes.toInt())
+        } else {
+            ""
+        }
     }
 }

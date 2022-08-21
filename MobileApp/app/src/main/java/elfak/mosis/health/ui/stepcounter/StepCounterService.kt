@@ -25,7 +25,9 @@ class StepCounterService : Service(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var stepCounterSensor: Sensor? = null
     private var stepDetectorSensor: Sensor? = null
+
     var currentStepsDetected: Int = 0
+
     var stepCount: Int = 0
     var newStepCount: Int = 0
 
@@ -35,7 +37,6 @@ class StepCounterService : Service(), SensorEventListener {
 
     override fun onCreate() {
         super.onCreate()
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -73,12 +74,13 @@ class StepCounterService : Service(), SensorEventListener {
 
                 event.values.firstOrNull()?.let {
                     Log.i("STEP-COUNTER", "Step count: $it ")
+                    Log.i("STEP-COUNTER", "Shared pref: ${prefs.stepCount}")
 
                     val count = it.toInt()
                     if(stepCount == 0)
                         stepCount = count
                     newStepCount = count - stepCount
-                    prefs.stepCount = (prefs.stepCount + it).toInt()
+                    prefs.stepCount = newStepCount
                     // Data 2: The number of nanosecond passed since the time of last boot
                     val lastDeviceBootTimeInMillis =
                         System.currentTimeMillis() - SystemClock.elapsedRealtime()

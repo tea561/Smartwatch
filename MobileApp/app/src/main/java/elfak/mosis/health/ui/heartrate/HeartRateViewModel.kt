@@ -13,7 +13,6 @@ import com.android.volley.toolbox.Volley
 import com.github.mikephil.charting.data.Entry
 import java.time.Instant
 import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -113,9 +112,9 @@ class HeartRateViewModel : ViewModel() {
         queue.add(jsonArrayRequest)
     }
 
-    fun updateLastValues(pulse: Int, timeString: Long){
+    fun updateLastValues(pulse: Int, time: Long){
         _lastValue.value = pulse
-        _lastTime.value = LocalDateTime.ofInstant(Instant.ofEpochMilli(timeString), TimeZone.getDefault().toZoneId())
+        _lastTime.value = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), TimeZone.getDefault().toZoneId())
     }
 }
 

@@ -6,11 +6,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,6 +28,7 @@ import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentHomeBinding
 import elfak.mosis.health.ui.bloodpressure.BloodPressureViewModel
 import elfak.mosis.health.ui.heartrate.HeartRateViewModel
+import elfak.mosis.health.ui.sleep.SleepViewModel
 import elfak.mosis.health.ui.stepcounter.StepCounterService
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
@@ -33,6 +36,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.concurrent.TimeUnit
 
 
 class HomeFragment : Fragment() {
@@ -42,6 +46,7 @@ class HomeFragment : Fragment() {
 
     private val bloodPressureViewModel: BloodPressureViewModel by activityViewModels()
     private val heartRateViewModel: HeartRateViewModel by activityViewModels()
+    private val sleepViewModel: SleepViewModel by activityViewModels()
 
 
     private var values: MutableList<String> = mutableListOf("0", "0", "0", "0")
@@ -76,7 +81,7 @@ class HomeFragment : Fragment() {
         //http
         val queue = Volley.newRequestQueue(view.context)
         //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url2 = "http://localhost:5000/api/Gateway/GetParameters/9"
+        val url2 = "http://localhost:5000/api/Gateway/GetAllParameters/9"
 
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url2, null,
             Response.Listener { response ->
@@ -84,14 +89,23 @@ class HomeFragment : Fragment() {
                 val sys = response["sys"]
                 val pulse = response["pulse"]
                 val dias = response["dias"]
-                val time = response["timestamp"]
+                val time = response["timestampVitals"]
+                val timestampSleepData = response["timestampSleepData"]
+                val sleepHours = response["sleepHours"]
+                val minutes = sleepHours as Double * 60
+                val hours = TimeUnit.MINUTES.toHours(minutes.toLong())
+                val remainMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
+                val sleepHoursString = String.format("%02d h %02d min", hours, remainMinutes.toInt())
 
                 bloodPressureViewModel.updateLastValues(sys as Int, dias as Int, time as Long)
                 heartRateViewModel.updateLastValues(pulse as Int, time.toLong())
+                sleepViewModel.updateLastValue(sleepHoursString, timestampSleepData.toString())
 
                 values[0] = pulse.toString()
+                values[1] = sleepHoursString
                 values[2] = "${sys.toString()}/${dias.toString()}"
                 homeAdapter.notifyItemChanged(0)
+                homeAdapter.notifyItemChanged(1)
                 homeAdapter.notifyItemChanged(2)
 
             },
@@ -135,10 +149,18 @@ class HomeFragment : Fragment() {
 
         val prefs = SharedPreferencesHelper.customPreference(view.context, "Step_data")
 
+        val listener =
+            OnSharedPreferenceChangeListener { prefs, key ->
+                binding.progressBar.progress = prefs.stepCount / 100
+                binding.textViewProgress.text = prefs.stepCount.toString()
+            }
 
-        binding.progressBar.progress = prefs.stepCount
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+
+
+        binding.progressBar.progress = prefs.stepCount / 100
         binding.textViewProgress.text = prefs.stepCount.toString()
-        binding.progressBar.max = 10000
+        binding.progressBar.max = 100
 
     }
 
@@ -205,7 +227,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun sendVolleyRequest() {
-
+    fun updateSteps() {
+        val prefs = SharedPreferencesHelper.customPreference(requireContext(), "Step_data")
+        binding.progressBar.progress = prefs.stepCount
     }
 }
