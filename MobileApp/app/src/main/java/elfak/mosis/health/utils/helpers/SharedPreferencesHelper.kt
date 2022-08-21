@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 object SharedPreferencesHelper {
 
     val STEP_COUNT = "STEP_COUNT"
+    val FIRST_TIME = "FIRST_TIME"
 
     fun defaultPreference(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -35,6 +36,12 @@ object SharedPreferencesHelper {
         get() = getInt(STEP_COUNT, 0)
         set(value) {
             editPref { it.putInt(STEP_COUNT, value) }
+        }
+
+    var SharedPreferences.firstTime
+        get() = getBoolean(FIRST_TIME, true)
+        set(value){
+            editPref { it.putBoolean(FIRST_TIME, value) }
         }
 
 }

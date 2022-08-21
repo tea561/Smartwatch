@@ -25,13 +25,13 @@ class Receiver : BroadcastReceiver() {
         val prefs = p0?.let { SharedPreferencesHelper.customPreference(it, "Step_data") }
         if (prefs != null) {
             Log.i("RECEIVER", prefs.stepCount.toString())
-//http
+            //http
             val queue = Volley.newRequestQueue(p0)
             //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
             val url2 = "http://localhost:5000/api/Gateway/PostSteps"
 
             val current = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("dd MM yyyy HH:mm ")
+            val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm ")
             val formatted = current.format(formatter)
             Log.i("FORMAT", formatted)
 
@@ -41,6 +41,7 @@ class Receiver : BroadcastReceiver() {
             postData.put("value", prefs.stepCount)
             postData.put("time", formatted)
             postData.put("userID", 51)
+            Log.i("STEPS", postData.toString())
             val jsonObjectRequest = JsonObjectRequest(
                 Request.Method.POST, url2, postData,
                 Response.Listener { response ->

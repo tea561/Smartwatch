@@ -3,7 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/CreateUserFragment">
+
+    <fragment
+        android:id="@+id/CreateUserFragment"
+        android:name="elfak.mosis.health.ui.user.CreateUserFragment"
+        android:label="Create user"
+        tools:layout="@layout/fragment_create_user" >
+    <action android:id="@+id/action_CreateFragment_to_HomeFragment"
+        app:destination="@id/nav_home" />
+
+    </fragment>
+
 
     <fragment
         android:id="@+id/nav_home"
@@ -61,5 +72,6 @@
         android:name="elfak.mosis.health.ui.calories.CaloriesFragment"
         android:label="Calories burnt"
         tools:layout="@layout/fragment_calories" />
+
 
 </navigation>

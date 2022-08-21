@@ -32,6 +32,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
 import elfak.mosis.health.databinding.ActivityMainBinding
 import elfak.mosis.health.ui.stepcounter.Receiver
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.firstTime
 
 
 class MainActivity : AppCompatActivity() {
@@ -63,6 +65,16 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+//        val graph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+//        val prefs = SharedPreferencesHelper.customPreference(this, "First time")
+//        if(prefs.firstTime){
+//            graph.setStartDestination(R.id.CreateUserFragment)
+//        }
+//        else {
+//            graph.setStartDestination(R.id.nav_home)
+//        }
+
 
         val pi: PendingIntent
 
@@ -123,21 +135,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
-//    private fun createNotificationChannel() {
-//        val notificationManager: NotificationManager = baseContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//
-//        val NOTIFICATION_CHANNEL_ID = "HealthChannel"
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-//            && notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null)
-//        {
-//            val name = baseContext.getString(R.string.app_name)
-//            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_MAX)
-//
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//    }
-
-
 }
