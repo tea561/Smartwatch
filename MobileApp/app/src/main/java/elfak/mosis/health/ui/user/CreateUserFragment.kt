@@ -66,7 +66,7 @@ class CreateUserFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }else {
-                val user: User = User(8, username, ageStr.toInt(), heightStr.toFloat(), weightStr.toFloat(), gender)
+                val user: User = User(8, username, ageStr.toInt(), heightStr.toFloat(), weightStr.toFloat(), gender, mutableListOf())
                 Log.i("USER", user.toString())
                 userViewModel.createUser(view.context, user)
             }

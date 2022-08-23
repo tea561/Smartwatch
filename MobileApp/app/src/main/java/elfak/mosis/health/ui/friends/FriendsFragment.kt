@@ -42,6 +42,7 @@ class FriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerViewRankings = view.findViewById<RecyclerView>(R.id.list)
+        friendsViewModel.getFriends("32", view.context)
 
         friendsViewModel.friends.observe(viewLifecycleOwner){newData ->
             if(newData.size < 1)
@@ -67,6 +68,13 @@ class FriendsFragment : Fragment() {
         buttonFindFriends.setOnClickListener {
             findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
         }
+
+        val buttonFindFriendsRV : Button = view.findViewById(R.id.buttonFindFriendRV)
+        buttonFindFriendsRV.setOnClickListener {
+            findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
+        }
+
+
     }
 
     private fun openFriendProfile(user: User){

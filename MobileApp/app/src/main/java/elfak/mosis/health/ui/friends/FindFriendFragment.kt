@@ -39,7 +39,7 @@ class FindFriendFragment : Fragment() {
 
         binding.buttonSendRequest.setOnClickListener{
             val friendId = binding.friendId.text.toString()
-            friendsViewModel.addFriend(friendId)
+            friendsViewModel.addFriend(friendId, view.context)
 
 //            if(gameCode.length != 6){
 //                Toast.makeText(requireContext(), "Game code must be 6 characters", Toast.LENGTH_SHORT).show()
@@ -54,7 +54,7 @@ class FindFriendFragment : Fragment() {
                 findNavController().navigate(R.id.action_FindFriendFragment_to_FriendsFragment)
                 Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
             }
-            if(state is SendRequestState.FindGameError){
+            if(state is SendRequestState.SendRequestError){
                 Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
             }
         }
