@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "health-app-smartwatch",
+  "private_key_id": "2ba1901d7ea38063c74bafe3db4c9aa545b13b06",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCkntkcbXusBj9M\nDjh0WfXAUra9gAGKHkrvEy3ztrRu7u+3xge/Mdwt5QIqfNMF2ut07f8oJTjMhFdj\nrXB4R7TAjRdBbwfagSTCwWMKOMbkXBCsc3Dv7nXnK+L2pzjTXfVJd3g5fr+qfIQK\n60KsmwCgQdhA2iPbweTjXmPrOhsXPcybNemWuOlZ58sLNjknZ/UGakgP/8B3D+Qu\nrM9Xl2uRg651pkxYfT9txuyUCbQ2/pV8aWghEp9dbxdgvNDUicYllPVunFpog4Zo\ngexQrKglqpW2tKYOyr0Myi4nbXLf3uFhXJoRkmS9YXj2A2ukSkAd0Nix7kSvbbb+\nbu8qjp0xAgMBAAECggEAG60A/0CAzDj4p0a0wwrkwAKn6k/88kWJf4wP66tJxmSx\nNIo8fy5Yv/aCWLZHm/JkJ3JjtVIcrHWLY5yjDfWwM7cEs+GAxoFztrJgfjVxaq73\ntqZp1EyY0daU/7a5XP+s3z8QnUnr2zO310YaHX6pqkenna+O28FLQ9Z4ofFQ4KUj\nvqENaF4TVMNsJWgLwwIt5zc5ia+Ct4kDANaTU+muxjloGegQ0EG3u6iFZG030/uU\nafpSIHfaQdCpXzuFJ1NzBDjO9S1NkR2ldzYFY6SG2Oad8I9RgQo4U8+AqIsnYVGU\n9TAmL68um4m8Vb8YIDdpSOvE0Byag3hoUMqVAEHYYQKBgQDjhrkJ+4HGGPKEmr+5\nriN0c7HcbCgh22qzN/ErGd/aB8vc52azGNVDyLSwc+8OdPsaHHSlUuZ7tYaP7ZE2\nt/bMS0qCeckNvqQIQEH7vtXbJTvYczoe7JzzWwkfISzhwBwHv2Y1rlUpGbhrl0TJ\nXG98VRH5AuX71AVuT8XQNUCMTQKBgQC5OM7wBgOcMbLZZx45stg1EwruwWs+WHTx\niVqQJ6rGAQwbRajJ5QdKwBBl7QUgUPeffelrhHjvtfeapOsX7l6Y1Qs5JhOwVKqY\n23KfuIDp9yaxM174Ux4YjV9efG2k3NKkr6UtmqU5iAyvg4/Ls3EmwZx+GclB7nA8\nM1s+Nm92dQKBgQDTFKmWGT7MCVj0rJwyJtu9rZfUZoLU5jqXCc8zrU1/eLwotIUS\nonc363u2N9gQEXbjQoL03XP2UPIFlOCjYwgTf8YgRdvAZJzJCtQsOV8tb92VcVD6\nX4k8O7i6qIx64z8d8PNh2donxzTQnAW0yYykTEfgPFAg0RI4xMk/4CeCAQKBgEGK\nPn9kQWbFlzmiaWmVRTgSku3E90PKXScSqT8VKjKCMFx+G6nFJv1mVOccJZI31EdV\ncIEhEQIRa5oG/UEskcCWsi/4r0LX0r3f+QFXchZX5BMT0GkiUCXz8GkoskuB7+9i\nT5qBfDGNWJ/Kd9lml4VVQSDF0xdHXeOPcJvk+y/5AoGBALDwE1/Q3k+aTaH9UJwx\nX/MEVpED/zhf2qdIBSGMrX0raquoD7IjSR0ks3h8yXwan0GWibMS+bsaPLZX0FIl\nxh42ecWxn9bDXaW9B3oiV5RwpF79Ib3vk3EYz1VnPVCKZt2NqwGsUpUWhm0DW3e5\nCg5ghxgd4f/facO0TILmRYt2\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-74my3@health-app-smartwatch.iam.gserviceaccount.com",
+  "client_id": "110214261227942015993",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-74my3%40health-app-smartwatch.iam.gserviceaccount.com"
+}

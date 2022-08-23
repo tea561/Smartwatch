@@ -1,0 +1,61 @@
+using Grpc.Core;
+using notification;
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
+
+
+namespace notification.Services
+{
+
+    public class NotificationService : Notification.NotificationBase
+    {
+        private readonly ILogger<NotificationService> _logger;
+        public NotificationService(ILogger<NotificationService> logger)
+        {
+            _logger = logger;
+        }
+
+        public override Task<NotifyReply> NotifyEvent(NotifyRequest request, ServerCallContext context)
+        {
+            _logger.LogDebug(request.ToString());
+            Console.WriteLine("Event: " + request.EventName + " occured with parameters: \n" + request.Params.ToString());
+
+            SendNotification("title", "body body body", "MY_TOKEN");
+
+            Console.WriteLine("CALLED");
+
+            return Task.FromResult(new NotifyReply
+            {
+                Message = "Event " + request.EventName + " received."
+            });
+        }
+
+        private Message CreateNotification(string title, string notificationBody, string token)
+        {
+            var message = new Message()
+            {
+                Data = new Dictionary<string, string>()
+    {
+        { "score", "850" },
+        { "time", "2:45" },
+    },
+                Token = token,
+            };
+            return message;
+        }
+
+        public void SendNotification(string token, string title, string body)
+        {
+            Console.WriteLine("FROM SEND");
+            var resss = FirebaseMessaging.DefaultInstance.SendAsync(CreateNotification(title, body, token)).Result;
+            Console.WriteLine(resss);
+            //var result = await FirebaseMessaging.DefaultInstance.SendAsync(CreateNotification(title, body, token));
+            //Console.WriteLine("Successfully sent message: " + result);
+
+
+        }
+
+
+    }
+}
