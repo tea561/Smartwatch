@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
@@ -157,7 +158,9 @@ class HomeFragment : Fragment() {
 
         prefs.registerOnSharedPreferenceChangeListener(listener)
 
-
+        binding.progressBar.setOnClickListener {
+            findNavController().navigate(R.id.action_HomeFragment_to_StepsFragment)
+        }
         binding.progressBar.progress = prefs.stepCount / 100
         binding.textViewProgress.text = prefs.stepCount.toString()
         binding.progressBar.max = 100

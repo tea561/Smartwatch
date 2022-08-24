@@ -1,4 +1,4 @@
-package elfak.mosis.health.ui.calories
+package elfak.mosis.health.ui.stepcounter
 
 import android.graphics.Color
 import android.os.Bundle
@@ -14,21 +14,18 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import elfak.mosis.health.R
-import elfak.mosis.health.databinding.FragmentBloodPressureBinding
-import elfak.mosis.health.databinding.FragmentCaloriesBinding
-import elfak.mosis.health.ui.bloodpressure.BloodPressureViewModel
+import elfak.mosis.health.databinding.FragmentSleepBinding
+import elfak.mosis.health.databinding.FragmentStepsBinding
 import elfak.mosis.health.ui.heartrate.FetchingState
 import elfak.mosis.health.ui.sleep.MyXAxisFormatter
 import elfak.mosis.health.ui.sleep.MyYAxisFormatter
+import elfak.mosis.health.ui.sleep.SleepHoursFormatter
+import elfak.mosis.health.ui.sleep.SleepViewModel
 
-
-class CaloriesFragment : Fragment() {
-
-    private val caloriesViewModel: CaloriesViewModel by activityViewModels()
-
-    private var _binding: FragmentCaloriesBinding? = null
+class StepsFragment : Fragment() {
+    private val stepsViewModel: StepsViewModel by activityViewModels()
+    private var _binding: FragmentStepsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,17 +36,18 @@ class CaloriesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentCaloriesBinding.inflate(inflater, container, false)
+        _binding = FragmentStepsBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewTodayCalories.text = caloriesViewModel.lastValue.value.toString()
-
+        binding.textViewTodaySteps.text = stepsViewModel.lastValue.value.toString()
 
         val chart = view.findViewById<BarChart>(R.id.bar_chart)
+        stepsViewModel.getStepsData(view.context)
+
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.xAxis.valueFormatter = MyXAxisFormatter()
@@ -66,15 +64,16 @@ class CaloriesFragment : Fragment() {
         chart.xAxis.axisMinimum = -0.5f
         chart.xAxis.axisMaximum = 6.5f
         chart.xAxis.gridLineWidth = 1f
-        caloriesViewModel.getCalories(view.context)
 
-        val fetchingCaloriesStateObserver = Observer<FetchingState> {state ->
+        val fetchingStateObserver =  Observer<FetchingState> { state ->
             if(state == FetchingState.Success) {
-                val weekEntries = caloriesViewModel.weeklyEntries
-                var dataSet = BarDataSet(weekEntries, "Label")
+                val dataEntries = stepsViewModel.weeklyStepsEntries
 
-                dataSet.color = ContextCompat.getColor(view.context, R.color.green_light)
-                dataSet.valueTextSize = 12f
+                val dataSet = BarDataSet(dataEntries, "Label")
+                dataSet.color = Color.parseColor("#efdd32")
+                dataSet.valueTextColor = ContextCompat.getColor(view.context, R.color.black)
+                dataSet.valueTextSize = 10f
+
                 val barData = BarData(dataSet)
                 barData.barWidth = 0.9f
                 chart.data = barData
@@ -86,12 +85,12 @@ class CaloriesFragment : Fragment() {
             }
         }
 
-        caloriesViewModel.fetchingCaloriesState.observe(viewLifecycleOwner, fetchingCaloriesStateObserver)
+        stepsViewModel.fetchingStepsDataState.observe(viewLifecycleOwner, fetchingStateObserver)
 
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        caloriesViewModel.fetchingCaloriesState.removeObservers(viewLifecycleOwner)
+        stepsViewModel.fetchingStepsDataState.removeObservers(viewLifecycleOwner)
     }
 }

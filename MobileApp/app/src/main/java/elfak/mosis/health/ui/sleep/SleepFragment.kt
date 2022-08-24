@@ -20,6 +20,7 @@ import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentBloodPressureDayBinding
 import elfak.mosis.health.databinding.FragmentSleepBinding
 import elfak.mosis.health.ui.heartrate.FetchingState
+import java.text.DateFormatSymbols
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -113,10 +114,10 @@ class MyXAxisFormatter : ValueFormatter() {
         val today = LocalDate.now()
         for (i in 6 downTo 1) {
             val day = today.minusDays(i.toLong())
-                val dayName = day.dayOfWeek.toString()
-            days.add(dayName)
+            val dayName = day.dayOfWeek.toString()
+            days.add(dayName.substring(0, 3))
         }
-        days.add(today.dayOfWeek.toString())
+        days.add(today.dayOfWeek.toString().substring(0, 3))
     }
 }
 

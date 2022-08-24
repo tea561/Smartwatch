@@ -35,6 +35,8 @@
 
         <action android:id="@+id/action_HomeFragment_to_CaloriesFragment"
             app:destination="@id/CaloriesFragment" />
+        <action android:id="@+id/action_HomeFragment_to_StepsFragment"
+            app:destination="@id/StepsFragment" />
     </fragment>
 
     <fragment
@@ -54,6 +56,13 @@
         android:name="elfak.mosis.health.ui.sleep.SleepFragment"
         android:label="Sleep Data"
         tools:layout="@layout/fragment_sleep" />
+
+    <fragment
+        android:id="@+id/StepsFragment"
+        android:name="elfak.mosis.health.ui.stepcounter.StepsFragment"
+        android:label="Steps"
+        tools:layout="@layout/fragment_steps" >
+    </fragment>
 
     <fragment
         android:id="@+id/HeartRateFragment"

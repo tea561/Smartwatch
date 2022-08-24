@@ -11,18 +11,33 @@
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/searchbar.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/side_nav_bar.xml" value="0.1865" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/app_bar_main.xml" value="0.12360688956433637" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/bluetooth_device.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/content_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_add_device.xml" value="0.176" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure.xml" value="0.2269021739130435" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure_day.xml" value="0.2269021739130435" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure_week.xml" value="0.2269021739130435" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_bluetooth_client.xml" value="0.264" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_bluetooth_server.xml" value="0.264" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_calories.xml" value="0.2269021739130435" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_create_user.xml" value="0.1" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_device.xml" value="0.1" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_device_list.xml" value="0.1" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_find_friend.xml" value="0.25416666666666665" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_friends.xml" value="0.264" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_friends_list.xml" value="0.176" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_gallery.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_heart_rate.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_heart_rate_day.xml" value="0.25" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_heart_rate_week.xml" value="0.1" />
-        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_home.xml" value="0.4" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_home.xml" value="0.536" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_sleep.xml" value="0.1" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_steps.xml" value="0.21331521739130435" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/nav_header_main.xml" value="0.12360688956433637" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/row.xml" value="0.25" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.25416666666666665" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>
     </option>
   </component>

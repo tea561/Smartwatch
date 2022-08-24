@@ -14,6 +14,11 @@ module.exports = {
 	methods: {
 		initRoutes(app) {
 			app.get("/getVitals", this.getVitals);
+			app.get("/getAllParameters", this.getAllParameters);
+			app.get("/getDailySum", this.getDailySum);
+			app.get("/getDailySumForWeek", this.getDailySumForWeek);
+			app.get("/getParameterForDay", this.getParameterForDay);
+			app.get("/getParameterForWeek", this.getParameterForWeek);
 			app.get("/getPulseForDay", this.getPulseForDay);
 			app.get("/getPulseForWeek", this.getPulseForWeek);
 			app.get("/getSysPressureForDay", this.getSysPressureForDay);
@@ -32,6 +37,47 @@ module.exports = {
 			app.put("/updateVitals", this.putVitals);
 			app.delete("/deleteVitals", this.deleteVitals);
 			app.delete("/deleteSleepHours", this.deleteSleepHours);
+		},
+		async getAllParameters(req, res) {
+			try {
+				const sysPressure = await this.influx.query(
+					`select last(*) from "sys-pressure" where userID='${req.query.userID}'`
+				);
+				if (sysPressure[0] == undefined) {
+					res.status(404);
+					res.send(`There is no entry for user with id = ${req.query.userID}.`);
+					return null;
+				}
+				const diasPressure = await this.influx.query(
+					`select last(*) from "dias-pressure" where userID='${req.query.userID}'`
+				);
+				const pulse = await this.influx.query(
+					`select last(*) from "pulse" where userID='${req.query.userID}'`
+				);
+				const sleepHours = await this.influx.query(
+					`select sum(value) from "sleep-hours" where time > now() - 24h and userID ='${req.query.userID}'`
+				);
+				const steps = await this.influx.query(
+					`select sum(value) from "steps" where time > now() - 24h and userID ='${req.query.userID}'`
+				);
+				const calories = await this.influx.query(
+					`select sum(value) from "calories" where time > now() - 24h and userID ='${req.query.userID}'`
+				)
+				res.send({
+					sys: sysPressure[0].last_value,
+					dias: diasPressure[0].last_value,
+					pulse: pulse[0].last_value,
+					sleepHours: sleepHours == [] ? 0 : sleepHours[0].sum,
+					steps: steps == [] ? 0 : steps[0].sum,
+					calories: calories == [] ? 0 : calories[0].sum,
+					userID: req.query.userID,
+					timestamp: new Date(sysPressure[0].time).getTime()
+				});
+			}
+			catch(err){
+				console.log(err);
+				res.status(500).send(err);
+			}
 		},
 		async getVitals(req, res) {
 			try {
@@ -60,6 +106,105 @@ module.exports = {
 			catch(err){
 				console.log(err);
 				res.status(500).send(err);
+			}
+		},
+		async getParameterForDay(req, res) {
+			try {
+				console.log(req.query);
+				const pulseArr = await this.influx.query(
+					`select * from "${req.query.param}" where time > now() - 24h and userID ='${req.query.userID}'`
+				)
+				if(pulseArr == [])
+				{
+					res.status(404);
+					res.send(`There is no entry for user with id = ${req.query.userID}.`);
+					return null;
+				}
+				console.log(pulseArr)
+				res.send(pulseArr)
+			}
+			catch(err){
+				console.log(err);
+				res.status(500).send(err)
+			}
+		},
+		async getParameterForWeek(req, res) {
+			try {
+				const weekArr = await this.influx.query(
+					`select mean(value) from "${req.query.param}" where time > now() - 6d and userID='${req.query.userID}' group by time(1d) `
+				)
+				if(weekArr == [])
+				{
+					res.status(404);
+					res.send(`There is no entry for user with id = ${req.query.userID}.`);
+					return null;
+				}
+				var resultArr = [];
+				weekArr.forEach(element => {
+					var newElement = {value: null, time: null};
+					newElement.value = element.mean
+					newElement.time = element.time
+					resultArr.push(newElement)
+				});
+				console.log(weekArr)
+				res.send(resultArr)
+			}
+			catch(err){
+				console.log(err);
+				res.status(500).send(err)
+			}
+		},
+		async getDailySum(req, res) {
+			try{
+				const dailySum = await this.influx.query(
+					`select sum(value) from "${req.query.param}" where time > now() - 24h and userID ='${req.query.userID}'`
+				)
+				//console.log(sleepHours)
+				if(dailySum == [])
+				{
+					res.status(404);
+					res.send(`There is no entry for user with id = ${req.query.userID}.`);
+					return null;
+				}
+				var resultArr = []
+				dailySum.forEach(element => {
+					var newElement = {sleepHours: null, timestamp: null};
+					newElement.value = element.sum
+					newElement.time = element.time
+					resultArr.push(newElement)
+				})
+				res.send(resultArr)
+			}
+			catch(err){
+				console.log(err);
+				res.status(500).send(err)
+			}
+		},
+		async getDailySumForWeek(req, res) {
+			try {
+				const weekArr = await this.influx.query(
+					`select sum(value) from "${req.query.param}" where time > now() - 6d and userID='${req.query.userID}' group by time(1d)`
+				)
+				
+				if(weekArr == [])
+				{
+					res.status(404);
+					res.send(`There is no entry for user with id = ${req.query.userID}.`);
+					return null;
+				}
+				var resultArr = [];
+				weekArr.forEach(element => {
+					var newElement = {value: null, time: null};
+					newElement.value = element.sum
+					newElement.time = element.time
+					resultArr.push(newElement)
+				});
+				console.log(weekArr)
+				res.send(resultArr)
+			}
+			catch(err){
+				console.log(err);
+				res.status(500).send(err)
 			}
 		},
 		async getPulseForDay(req, res) {
@@ -253,7 +398,7 @@ module.exports = {
 		async getCaloriesForDay(req, res) {
 			try{
 				const sleepHours = await this.influx.query(
-					`select sum(value) from "${req.body.param}" where time > now() - 24h and userID ='${req.query.userID}'`
+					`select sum(value) from "calories" where time > now() - 24h and userID ='${req.query.userID}'`
 				)
 				console.log(sleepHours)
 				if(sleepHours == [])
@@ -266,7 +411,7 @@ module.exports = {
 				sleepHours.forEach(element => {
 					var newElement = {value: null, time: null};
 					newElement.value = element.sum
-					newElement.timestamp = element.time
+					newElement.time = element.time
 					resultArr.push(newElement)
 				})
 				res.send(resultArr)
@@ -292,7 +437,7 @@ module.exports = {
 				weekArr.forEach(element => {
 					var newElement = {value: null, time: null};
 					newElement.value = element.sum
-					newElement.timestamp = element.time
+					newElement.time = element.time
 					resultArr.push(newElement)
 				});
 				console.log(weekArr)
@@ -407,6 +552,7 @@ module.exports = {
 					res.status(400).send("Post parameters not defined.");
 					return null;
 			}
+			console.log(req.body)
 			try {
 				this.influx.writePoints([{
 					measurement: 'calories',
@@ -416,7 +562,6 @@ module.exports = {
 					fields: {
 						value: req.body.calories
 					},
-					timestamp: new Date().getTime()
 				}]);
 				res.send(true);
 			}
@@ -442,7 +587,6 @@ module.exports = {
 					fields: {
 						value: req.body.value
 					},
-					timestamp: new Date(req.body.time).getTime() * 1000
 				}]);
 				res.send(true);
 			}

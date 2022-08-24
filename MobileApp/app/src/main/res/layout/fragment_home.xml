@@ -122,29 +122,29 @@
                 android:id="@+id/recyclerView"
                 />
         </RelativeLayout>
-        <androidx.cardview.widget.CardView
-            android:layout_width="250dp"
-            app:cardCornerRadius="25dp"
-            app:cardElevation="10dp"
-            app:cardBackgroundColor="#E53935"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp"
-            android:layout_centerHorizontal="true"
-            android:layout_height="50dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Donate"
-                android:textColor="#F0FFFFFF"
-                android:drawableLeft="@drawable/heart"
-                android:drawablePadding="10dp"
-                android:drawableTint="#E8FFFFFF"
-                android:gravity="center"
-                android:layout_gravity="center|center_vertical"
-                android:fontFamily="@font/baloo2_semibold"
-                android:textSize="17sp"
-                />
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:layout_width="250dp"-->
+<!--            app:cardCornerRadius="25dp"-->
+<!--            app:cardElevation="10dp"-->
+<!--            app:cardBackgroundColor="#E53935"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:layout_height="50dp">-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Donate"-->
+<!--                android:textColor="#F0FFFFFF"-->
+<!--                android:drawableLeft="@drawable/heart"-->
+<!--                android:drawablePadding="10dp"-->
+<!--                android:drawableTint="#E8FFFFFF"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_gravity="center|center_vertical"-->
+<!--                android:fontFamily="@font/baloo2_semibold"-->
+<!--                android:textSize="17sp"-->
+<!--                />-->
 
-        </androidx.cardview.widget.CardView>
+<!--        </androidx.cardview.widget.CardView>-->
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,6 +25,198 @@ namespace gateway.Controllers
         }
 
         /// <summary>
+        /// Gets user's health parameters.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <returns>Health parameters.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetAllParameters/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllParameters(int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getAllParameters?userID={userID}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var parameters = await response.Content.ReadFromJsonAsync<HealthParameters>();
+                        return Ok(parameters);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets values of one parameter for today.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <param name="param">Name of parameter</param>
+        /// <returns>Value of parameter.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetParameterForDay/{param}/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetParameterForDay(string param, int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getParameterForDay?userID={userID}&param={param}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var parameters = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
+                        return Ok(parameters);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets values of one parameter for week.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <param name="param">Name of parameter</param>
+        /// <returns>Values of parameter.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetParameterForWeek/{param}/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetParameterForWeek(string param, int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getParameterForWeek?userID={userID}&param={param}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var parameters = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
+                        return Ok(parameters);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets sum of all values for today.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <param name="param">Name of parameter</param>
+        /// <returns>Values of parameter.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetDailySum/{param}/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetDailySum(string param, int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getDailySum?userID={userID}&param={param}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var parameters = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
+                        return Ok(parameters);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Gets values for one week.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <param name="param">Name of parameter</param>
+        /// <returns>Values of parameter.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetDailySumForWeek/{param}/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetDailySumForWeek(string param, int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getDailySumForWeek?userID={userID}&param={param}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var parameters = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
+                        return Ok(parameters);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+        /// <summary>
         /// Gets user's friends.
         /// </summary>
         /// <param name="userID">User ID</param>
@@ -107,10 +299,10 @@ namespace gateway.Controllers
         /// <param name="userID">User ID</param>
         /// <returns>Vitals.</returns>
         /// <response code="404">User not found.</response>
-        [HttpGet("GetAllParameters/{userID}")]
+        [HttpGet("GetVitals/{userID}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllParameters(int userID)
+        public async Task<IActionResult> GetVitals(int userID)
         {
 
             Parameters parameters = new Parameters();
@@ -494,6 +686,44 @@ namespace gateway.Controllers
         }
 
         /// <summary>
+        /// Gets calories for last 7 days.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <returns>Burned calories for last 7 days.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetCaloriesForWeek/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetCaloriesForWeek(int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getCaloriesForWeek?userID={userID}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var calories = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
+                        return Ok(calories);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets steps for last 7 days.
         /// </summary>
         /// <param name="userID">User ID</param>
@@ -847,7 +1077,7 @@ namespace gateway.Controllers
         /// <returns>True if data is successfully added. Otherwise, false.</returns>
         /// <remarks>
         ///     Sample request:
-        ///         
+        ///         Parameters
         ///         POST /Gateway
         ///         {
         /// {
@@ -918,7 +1148,7 @@ namespace gateway.Controllers
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         calories = await response.Content.ReadFromJsonAsync<float>();
-                        //await this.PublishVitals(serializedObject);
+                        Console.WriteLine(calories);
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
@@ -935,7 +1165,7 @@ namespace gateway.Controllers
                 if(calories != -1.0f)
                 {
                     var postData = new {
-                        value = calories,
+                        calories = calories,
                         userID = activityParameters.UserID
                     };
 
@@ -944,6 +1174,7 @@ namespace gateway.Controllers
 
                     using (var response = await httpClient.PostAsync("http://data:3333/postCalories", postContent))
                     {
+                        Console.WriteLine("DATA POST");
                         if (response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             var resp = await response.Content.ReadFromJsonAsync<bool>();

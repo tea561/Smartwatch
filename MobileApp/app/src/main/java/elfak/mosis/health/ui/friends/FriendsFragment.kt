@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import elfak.mosis.health.R
 import elfak.mosis.health.ui.friends.model.FriendsViewModel
 import elfak.mosis.health.ui.user.data.User
@@ -71,6 +72,11 @@ class FriendsFragment : Fragment() {
 
         val buttonFindFriendsRV : Button = view.findViewById(R.id.buttonFindFriendRV)
         buttonFindFriendsRV.setOnClickListener {
+            findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
+        }
+
+        val fab: FloatingActionButton = view.findViewById(R.id.fab)
+        fab.setOnClickListener {
             findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
         }
 

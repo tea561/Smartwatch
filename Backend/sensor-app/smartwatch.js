@@ -72,3 +72,33 @@ const sleepInterval = setInterval(() => {
       console.error(err);
   });
 }, 5000);
+
+let exerciseRecords = [];
+let currentExerciesRecord = 0;
+
+const caloriesUrl = "http://localhost:5000/api/Gateway/CalculateCalories";
+const caloriesParser = parse.parse({columns: true}, function(err,recs){
+  exerciseRecords = recs;
+});
+
+fs.createReadStream("./exercise.csv").pipe(caloriesParser);
+
+const caloriesInterval = setInterval(() => {
+  const caloriesParams = {
+    UserID: 4,
+    Duration: exerciseRecords[currentExerciesRecord].Duration,
+    Heart_Rate: exerciseRecords[currentExerciesRecord].Heart_Rate,
+    Body_Temp: exerciseRecords[currentExerciesRecord].Body_Temp,
+  };
+
+  currentExerciesRecord = (currentExerciesRecord + 1) % exerciseRecords.length;
+  console.log(caloriesParams);
+  axios.post(caloriesUrl, caloriesParams)
+    .then((res) => {
+
+      console.log(`Status: ${res.status}`);
+      console.log('Body: ', res.data);
+    }).catch((err) => {
+      //console.error(err);
+  });
+}, 10000)
