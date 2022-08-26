@@ -14,6 +14,8 @@ import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import elfak.mosis.health.ui.user.data.User
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper._id
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
 import org.json.JSONObject
 import java.time.LocalDateTime
@@ -29,10 +31,11 @@ class FriendsViewModel : ViewModel() {
     var friends: LiveData<MutableList<User>> = _friends
 
     fun getFriends(currentUserUid: String, context:Context) {
+        val prefs = SharedPreferencesHelper.customPreference(context, "First time")
         //http
         val queue = Volley.newRequestQueue(context)
         //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetFriends/3"
+        val url = "http://localhost:5000/api/Gateway/GetFriends/${prefs._id}"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -69,10 +72,12 @@ class FriendsViewModel : ViewModel() {
     }
 
     fun addFriend(friendId: String, context: Context) {
+        val prefs = SharedPreferencesHelper.customPreference(context, "First time")
         //http
         val queue = Volley.newRequestQueue(context)
         //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url2 = "http://localhost:5000/api/Gateway/AddFriend/3/${friendId}"
+        val url2 = "http://localhost:5000/api/Gateway/AddFriend/${prefs._id}/${friendId}"
+        Log.i("url", url2)
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.PUT, url2, null,

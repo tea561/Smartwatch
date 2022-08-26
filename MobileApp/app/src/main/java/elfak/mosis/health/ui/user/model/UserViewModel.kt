@@ -49,6 +49,8 @@ class UserViewModel : ViewModel() {
                 Log.i("HTTP", "Response: %s".format(response.toString()))
                 val user = Gson().fromJson(response.toString(), User::class.java)
                 currentUser = user
+                val prefs = SharedPreferencesHelper.customPreference(context, "First time")
+                prefs._id = currentUser!!._id
                 _fetchingUserState.value = FetchingState.Success
             },
             Response.ErrorListener { error ->

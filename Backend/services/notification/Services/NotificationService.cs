@@ -136,8 +136,8 @@ namespace notification.Services
                         Token = token,
                     };
                 }
-                if(message != null)
-                    Console.WriteLine(message.ToString());
+                // if(message != null)
+                //     Console.WriteLine(message.ToString());
             }
             
 
@@ -155,14 +155,17 @@ namespace notification.Services
                 
                 using (var response = await httpClient.GetAsync($"http://gateway:80/api/Gateway/GetFcm/{userID}"))
                 {
-                    Console.WriteLine(response.ToString());
+                    //Console.WriteLine(response.ToString());
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var parameters = await response.Content.ReadFromJsonAsync<FcmToken>();
                         Console.Write(parameters.Fcm);
                         if(parameters != null){
-                            var resss = FirebaseMessaging.DefaultInstance.SendAsync(CreateNotification(title, body, parameters.Fcm)).Result;
-                            Console.WriteLine(resss);
+                            var msg =CreateNotification(title, body, parameters.Fcm);
+                            if(msg != null){
+                                var fcmResult = FirebaseMessaging.DefaultInstance.SendAsync(msg).Result;
+                                Console.WriteLine(fcmResult);
+                            }
                         }
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
