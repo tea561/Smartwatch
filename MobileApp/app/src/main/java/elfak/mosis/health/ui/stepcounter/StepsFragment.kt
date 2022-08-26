@@ -22,8 +22,11 @@ import elfak.mosis.health.ui.sleep.MyXAxisFormatter
 import elfak.mosis.health.ui.sleep.MyYAxisFormatter
 import elfak.mosis.health.ui.sleep.SleepHoursFormatter
 import elfak.mosis.health.ui.sleep.SleepViewModel
+import elfak.mosis.health.ui.user.model.UserViewModel
 
 class StepsFragment : Fragment() {
+
+    private val userViewModel: UserViewModel by activityViewModels()
     private val stepsViewModel: StepsViewModel by activityViewModels()
     private var _binding: FragmentStepsBinding? = null
     private val binding get() = _binding!!
@@ -46,7 +49,7 @@ class StepsFragment : Fragment() {
         binding.textViewTodaySteps.text = stepsViewModel.lastValue.value.toString()
 
         val chart = view.findViewById<BarChart>(R.id.bar_chart)
-        stepsViewModel.getStepsData(view.context)
+        userViewModel.currentUser?.let { stepsViewModel.getStepsData(view.context, it._id) }
 
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM

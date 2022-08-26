@@ -16,9 +16,10 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import elfak.mosis.health.R
+import elfak.mosis.health.ui.user.model.UserViewModel
 
 class HeartRateDayFragment : Fragment() {
-
+    private val userViewModel: UserViewModel by activityViewModels()
     private val heartRateViewModel:  HeartRateViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,7 @@ class HeartRateDayFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val chart = view.findViewById<LineChart>(R.id.bpm_day_chart)
-        heartRateViewModel.getDailyData(view.context)
+        userViewModel.currentUser?.let { heartRateViewModel.getDailyData(view.context, it._id) }
 
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM

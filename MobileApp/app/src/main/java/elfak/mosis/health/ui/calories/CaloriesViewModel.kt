@@ -12,6 +12,10 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.github.mikephil.charting.data.BarEntry
 import elfak.mosis.health.ui.heartrate.FetchingState
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CaloriesViewModel: ViewModel(){
     var weeklyEntries = ArrayList<BarEntry>()
@@ -21,12 +25,12 @@ class CaloriesViewModel: ViewModel(){
     private val _fetchingCaloriesState by lazy { MutableLiveData<FetchingState>(FetchingState.Idle) }
     val fetchingCaloriesState: LiveData<FetchingState> = _fetchingCaloriesState
 
-    fun getCalories(context: Context) {
+    fun getCalories(context: Context, _id: Int) {
         _fetchingCaloriesState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetCaloriesForWeek/4"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetDailySumForWeek/calories/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetDailySumForWeek/calories/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,

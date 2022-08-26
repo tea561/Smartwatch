@@ -1,8 +1,10 @@
 from crypt import methods
 from curses.ascii import FF
 import string
+from urllib.robotparser import RequestRate
 from flask import request, abort, Response
 from flask import Flask
+import random as rand
 from flask import jsonify
 from bson.objectid import ObjectId
 from bson.json_util import dumps
@@ -16,6 +18,10 @@ mongo_client = MongoClient(MONGO_URI, username = os.environ['MONGODB_USERNAME'],
 
 mongo_db = mongo_client['usersdb']
 users = mongo_db.users
+fcm = mongo_db.fcm
+
+avatars = ["1nBY3lcEQGKQGXb5SHFjqE9Sj56-kPNiw", "1muX0Mdx5-3qMK41KuCAaJhbveBTxnRAQ", "1ENU_a_tlrgmr0nXSqIqsGhIbuhpNz-In", "1IhZcOe8N1oEv5A6TJAh2pjnIng30pO07", "1aEiSPxkXrqd5C9Tk0L8EyievQY_8dGj-",
+"1z7u9ghHvsPNZnSX2uQD2f3BI05zvsQ4g", "1MNFYpLcm2DcVgfYuSRlubdwEFLHJDNQk", "1MJw0FS_n7kZDLuFUTOy4RJ2R4BzZvkqj"]
 
 app = Flask(__name__)
 
@@ -30,6 +36,8 @@ def add_user():
         request.json['_id'] is None or request.json['gender'] is None or request.json['height'] is None or request.json['weight'] is None:
         abort(400)
     else:
+        request.json['_id'] = rand.randint(1000, 9999)
+        request.json['imgSrc'] = "https://docs.google.com/uc?id=" + avatars[rand.randint(0, 7)]
         user_id = users.insert_one(request.json).inserted_id
         return str(user_id)
 
@@ -92,6 +100,13 @@ def get_user(user_id: int):
     print(user, flush=True)
     return dumps(user)
 
+@app.route("/user/addPoints", methods=["PUT"])
+def update_rank():
+  if request.json['points'] is None or request.json['_id'] is None:
+    abort(400)
+  else:
+    user = users.find_one_and_update({'_id': request.json['_id']}, {'$inc': {'rank': request.json['points']}}, return_document=ReturnDocument.AFTER)
+    return str(user['rank'])
 
     # if None == user:
     #     return Response("User not found", status=404, mimetype="application/json")
@@ -104,6 +119,36 @@ def add_friend(user_id: int, friend_id: int):
     friend = users.find_one_and_update({'_id': friend_id}, {'$push': {'friends': user_id}}, return_document=ReturnDocument.AFTER)
     print(user, flush=True)
     return dumps(user)
+
+@app.route("/user/addFcm", methods = ["POST"])
+def add_fcm():
+  print(request.get_json(), flush=True)
+  if request.json['fcm'] is None:
+        abort(400)
+  else:
+    res = fcm.insert_one(request.json).inserted_id
+    return dumps(res)
+    
+
+@app.route("/user/updateFcm", methods = ["PUT"])
+def update_fcm():
+  if request.json['fcm'] is None:
+        abort(400)
+  else:
+    fcm.update_one({
+      '_id': request.json['_id']
+    },{
+      '$set': {
+        'fcm': request.json['fcm']
+      }
+    }, upsert = False)
+    return dumps(request.json['_id'])
+
+@app.route("/user/getFcm/<int:user_id>", methods=["GET"])
+def get_fcm(user_id:int):
+  res = fcm.find_one({'_id': user_id})
+  return dumps(res)
+
 
 
 if __name__ == '__main__':

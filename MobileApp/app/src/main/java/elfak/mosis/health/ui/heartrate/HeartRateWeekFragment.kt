@@ -16,9 +16,11 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import elfak.mosis.health.R
 import elfak.mosis.health.ui.sleep.MyXAxisFormatter
+import elfak.mosis.health.ui.user.model.UserViewModel
 
 class HeartRateWeekFragment : Fragment() {
 
+    private val userViewModel: UserViewModel by activityViewModels()
     private val heartRateViewModel: HeartRateViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ class HeartRateWeekFragment : Fragment() {
         chart.xAxis.axisMinimum = 0f
         chart.xAxis.axisMaximum = 6f
         chart.xAxis.gridLineWidth = 1f
-        heartRateViewModel.getWeeklyData(view.context)
+        userViewModel.currentUser?.let { heartRateViewModel.getWeeklyData(view.context, it._id) }
 
         val fetchingStateObserver = Observer<FetchingState> { state ->
             if(state == FetchingState.Success) {

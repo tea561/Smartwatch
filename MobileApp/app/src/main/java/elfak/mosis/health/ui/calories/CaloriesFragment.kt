@@ -22,10 +22,12 @@ import elfak.mosis.health.ui.bloodpressure.BloodPressureViewModel
 import elfak.mosis.health.ui.heartrate.FetchingState
 import elfak.mosis.health.ui.sleep.MyXAxisFormatter
 import elfak.mosis.health.ui.sleep.MyYAxisFormatter
+import elfak.mosis.health.ui.user.model.UserViewModel
 
 
 class CaloriesFragment : Fragment() {
 
+    private val userViewModel: UserViewModel by activityViewModels()
     private val caloriesViewModel: CaloriesViewModel by activityViewModels()
 
     private var _binding: FragmentCaloriesBinding? = null
@@ -46,7 +48,7 @@ class CaloriesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewTodayCalories.text = caloriesViewModel.lastValue.value.toString()
+        binding.textViewTodayCalories.text = "${caloriesViewModel.lastValue.value.toString()}kcal"
 
 
         val chart = view.findViewById<BarChart>(R.id.bar_chart)
@@ -66,7 +68,7 @@ class CaloriesFragment : Fragment() {
         chart.xAxis.axisMinimum = -0.5f
         chart.xAxis.axisMaximum = 6.5f
         chart.xAxis.gridLineWidth = 1f
-        caloriesViewModel.getCalories(view.context)
+        userViewModel.currentUser?.let { caloriesViewModel.getCalories(view.context, it._id) }
 
         val fetchingCaloriesStateObserver = Observer<FetchingState> {state ->
             if(state == FetchingState.Success) {

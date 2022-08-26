@@ -19,11 +19,13 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentBloodPressureDayBinding
 import elfak.mosis.health.ui.heartrate.FetchingState
+import elfak.mosis.health.ui.user.model.UserViewModel
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 class BloodPressureDayFragment : Fragment() {
 
+    private val userViewModel: UserViewModel by activityViewModels()
     private val bloodPressureViewModel: BloodPressureViewModel by activityViewModels()
     private var _binding: FragmentBloodPressureDayBinding? = null
     private val binding get() = _binding!!
@@ -61,7 +63,7 @@ class BloodPressureDayFragment : Fragment() {
         chart.xAxis.axisMinimum = 0f
         chart.xAxis.axisMaximum = 24f
         chart.xAxis.gridLineWidth = 1f
-        bloodPressureViewModel.getDailySysData(view.context)
+        userViewModel.currentUser?.let { bloodPressureViewModel.getDailySysData(view.context, it._id) }
 
         var sysEntries = ArrayList<Entry>()
         var dataSetSys: LineDataSet = LineDataSet(sysEntries, "sys")
@@ -79,7 +81,7 @@ class BloodPressureDayFragment : Fragment() {
                 dataSetSys.setCircleColor(dataSetSys.color)
                 dataSetSys.setDrawCircleHole(false)
 
-                bloodPressureViewModel.getDailyDiasData(view.context)
+                userViewModel.currentUser?.let { bloodPressureViewModel.getDailyDiasData(view.context, it._id) }
             }
             if(state is FetchingState.FetchingError) {
                 Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()

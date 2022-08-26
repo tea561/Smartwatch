@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ic_abs_bckg2"
     android:orientation="vertical"
     tools:context=".ui.device.AddDeviceFragment">
 
@@ -11,14 +12,17 @@
         android:id="@+id/textViewConnectedDevices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Your devices"
-        android:textColor="@color/blue_dark"
+        android:textAlignment="center"
+        android:textColor="@color/white"
         android:textSize="24sp" />
 
     <ListView
         android:id="@+id/listViewConnectedDevices"
         android:layout_width="match_parent"
-        android:layout_height="584dp" />
+        android:layout_height="453dp"
+        android:layout_marginTop="40dp" />
 
     <Button
         android:id="@+id/buttonFind"

@@ -20,12 +20,14 @@ import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentBloodPressureWeekBinding
 import elfak.mosis.health.ui.heartrate.FetchingState
 import elfak.mosis.health.ui.sleep.MyXAxisFormatter
+import elfak.mosis.health.ui.user.model.UserViewModel
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 class BloodPressureWeekFragment : Fragment() {
 
     private val bloodPressureViewModel: BloodPressureViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private var _binding: FragmentBloodPressureWeekBinding? = null
     private val binding get() = _binding!!
 
@@ -60,7 +62,7 @@ class BloodPressureWeekFragment : Fragment() {
         chart.xAxis.axisMaximum = 6f
         chart.xAxis.gridLineWidth = 1f
         chart.xAxis.valueFormatter = MyXAxisFormatter()
-        bloodPressureViewModel.getWeeklySysData(view.context)
+        userViewModel.currentUser?.let { bloodPressureViewModel.getWeeklySysData(view.context, it._id) }
 
         var sysEntries = ArrayList<Entry>()
         var dataSetSys: LineDataSet = LineDataSet(sysEntries, "sys")
@@ -77,7 +79,7 @@ class BloodPressureWeekFragment : Fragment() {
                 dataSetSys.valueTextSize = 10f
                 dataSetSys.setDrawCircleHole(false)
 
-                bloodPressureViewModel.getWeeklyDiasData(view.context)
+                userViewModel.currentUser?.let { bloodPressureViewModel.getWeeklyDiasData(view.context, it._id) }
             }
             if(state is FetchingState.FetchingError) {
                 Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()

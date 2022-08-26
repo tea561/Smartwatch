@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,23 +12,36 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewToday"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Today"
-            android:textAlignment="center"
-            android:textColor="@color/gray_dark"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/textViewTodayCalories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="104dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/rectangle"
+            android:backgroundTint="@color/transparent_purple"
             android:gravity="center"
-            android:text="255kcal"
-            android:textAlignment="center"
-            android:textSize="34sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewToday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Today"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textViewTodayCalories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="255kcal"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="34sp" />
+        </LinearLayout>
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/bar_chart"

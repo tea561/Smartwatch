@@ -35,10 +35,10 @@ class HomeAdapter(context: Context, values: List<String>) : RecyclerView.Adapter
 
     private fun setData()
     {
-        images = listOf(R.drawable.heartrate2, R.drawable.zzz, R.drawable.arm, R.drawable.exercise )
+        images = listOf(R.drawable.bckg1, R.drawable.bckg2, R.drawable.bckg3, R.drawable.bckg4 )
         secondImages = listOf(R.drawable.solidheart, R.drawable.baseline_nightlight_round_24, R.drawable.bloodpressure,
             R.drawable.fire)
-        colors = listOf(R.color.purple, R.color.turquoise, R.color.blue, R.color.purple2)
+        colors = listOf(R.color.transparent_purple, R.color.transparent_turquoise, R.color.transparent_blue, R.color.transparent_purple2)
         actions = listOf(R.id.action_HomeFragment_to_HeartRateFragment, R.id.action_HomeFragment_to_SleepFragment,
         R.id.action_HomeFragment_to_BloodPressureFragment, R.id.action_HomeFragment_to_CaloriesFragment)
     }

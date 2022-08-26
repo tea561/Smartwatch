@@ -65,16 +65,6 @@ class FriendsFragment : Fragment() {
         recyclerViewRankings.layoutManager = LinearLayoutManager(requireContext())
 
 
-        val buttonFindFriends : Button = view.findViewById(R.id.buttonNoFriends)
-        buttonFindFriends.setOnClickListener {
-            findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
-        }
-
-        val buttonFindFriendsRV : Button = view.findViewById(R.id.buttonFindFriendRV)
-        buttonFindFriendsRV.setOnClickListener {
-            findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)
-        }
-
         val fab: FloatingActionButton = view.findViewById(R.id.fab)
         fab.setOnClickListener {
             findNavController().navigate(R.id.action_FriendsFragment_to_FindFriendFragment)

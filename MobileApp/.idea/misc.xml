@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2565" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/circle.xml" value="0.2565" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/gradient.xml" value="0.1" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2565" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/ic_menu_camera.xml" value="0.2565" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.2565" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/main_back.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/progressbar.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/drawable/rectangle.xml" value="0.22" />
@@ -16,7 +21,7 @@
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/content_main.xml" value="0.25416666666666665" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_add_device.xml" value="0.176" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure.xml" value="0.2269021739130435" />
-        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure_day.xml" value="0.2269021739130435" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure_day.xml" value="0.264" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_blood_pressure_week.xml" value="0.2269021739130435" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_bluetooth_client.xml" value="0.264" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_bluetooth_server.xml" value="0.264" />
@@ -31,11 +36,14 @@
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_heart_rate.xml" value="0.1" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_heart_rate_day.xml" value="0.25" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_heart_rate_week.xml" value="0.1" />
-        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_home.xml" value="0.536" />
-        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_sleep.xml" value="0.1" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_profile.xml" value="0.21331521739130435" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_sleep.xml" value="0.2" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_slideshow.xml" value="0.21331521739130435" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_steps.xml" value="0.21331521739130435" />
-        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/nav_header_main.xml" value="0.12360688956433637" />
-        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/row.xml" value="0.25" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/fragment_welcome.xml" value="0.13854166666666667" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/nav_header_main.xml" value="0.2" />
+        <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/layout/row.xml" value="0.264" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/menu/activity_main_drawer.xml" value="0.25416666666666665" />
         <entry key="..\:/IV/Smartwatch/MobileApp/app/src/main/res/xml/network_security_config.xml" value="0.1" />
       </map>

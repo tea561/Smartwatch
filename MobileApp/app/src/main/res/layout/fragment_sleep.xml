@@ -11,23 +11,36 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textViewToday"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Today"
-            android:textAlignment="center"
-            android:textColor="@color/gray_dark"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/textViewTodayHours"
-            android:layout_width="match_parent"
-            android:layout_height="143dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/rectangle"
+            android:backgroundTint="@color/purple2"
             android:gravity="center"
-            android:text="7hrs 30min"
-            android:textAlignment="center"
-            android:textSize="48sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textViewToday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Today"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textViewTodayHours"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                android:gravity="center"
+                android:text="7hrs 30min"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="48sp" />
+        </LinearLayout>
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/bar_chart"

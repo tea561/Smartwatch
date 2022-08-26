@@ -48,11 +48,12 @@ class BloodPressureViewModel : ViewModel() {
     val fetchingDailyDiasState: LiveData<FetchingState> = _fetchingDailyDiasState
 
 
-    fun getWeeklySysData(context: Context) {
+    fun getWeeklySysData(context: Context, _id: Int) {
+        _fetchingWeeklySysState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetSysPressureForWeek/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameterForWeek/sys-pressure/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetParameterForWeek/sys-pressure/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -86,11 +87,12 @@ class BloodPressureViewModel : ViewModel() {
         queue.add(jsonArrayRequest)
     }
 
-    fun getDailySysData(context: Context) {
+    fun getDailySysData(context: Context, _id: Int) {
+        _fetchingDailySysState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetSysPressureForDay/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameterForDay/sys-pressure/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetParameterForDay/sys-pressure/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -127,11 +129,12 @@ class BloodPressureViewModel : ViewModel() {
         queue.add(jsonArrayRequest)
     }
 
-    fun getWeeklyDiasData(context: Context) {
+    fun getWeeklyDiasData(context: Context, _id: Int) {
+        _fetchingWeeklyDiasState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetDiasPressureForWeek/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameterForWeek/dias-pressure/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetParameterForWeek/dias-pressure/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -145,7 +148,11 @@ class BloodPressureViewModel : ViewModel() {
                         weeklyDiasEntries.add(Entry(i.toFloat(), 0f))
                     }
                     else {
-                        weeklyDiasEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
+                        if(value is Double)
+                            weeklyDiasEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
+                        else if (value is Int)
+                            weeklyDiasEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
+
                     }
                 }
                 _fetchingWeeklyDiasState.value = FetchingState.Success
@@ -165,11 +172,12 @@ class BloodPressureViewModel : ViewModel() {
         queue.add(jsonArrayRequest)
     }
 
-    fun getDailyDiasData(context: Context) {
+    fun getDailyDiasData(context: Context, _id: Int) {
+        _fetchingDailyDiasState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetDiasPressureForDay/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameterForWeek/dias-pressure/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetParameterForDay/dias-pressure/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,

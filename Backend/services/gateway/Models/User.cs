@@ -22,6 +22,12 @@ namespace gateway.Models
         [JsonProperty("weight")]
         public float? Weight { get; set; }
 
+        [JsonProperty("rank")]
+        public double? Rank { get; set; }
+
+        [JsonProperty("imgSrc")]
+        public string? ImgSrc { get; set; }
+
         [JsonProperty("friends")]
         public int[]? Friends {get; set;}
 

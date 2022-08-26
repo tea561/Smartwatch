@@ -22,12 +22,12 @@ class StepsViewModel : ViewModel(){
     private val _fetchingStepsDataState by lazy { MutableLiveData<FetchingState>(FetchingState.Idle) }
     val fetchingStepsDataState: LiveData<FetchingState> = _fetchingStepsDataState
 
-    fun getStepsData(context: Context) {
+    fun getStepsData(context: Context, _id: Int) {
         _fetchingStepsDataState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetStepsForWeek/51"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetDailySumForWeek/steps/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetDailySumForWeek/steps/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,

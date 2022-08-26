@@ -24,6 +24,47 @@ namespace gateway.Controllers
             _configuration = configuration;
         }
 
+        #region GetHealthParameters
+
+        /// <summary>
+        /// Gets parameters for specific user.
+        /// </summary>
+        /// <param name="userID">User ID</param>
+        /// <returns>Vitals.</returns>
+        /// <response code="404">User not found.</response>
+        [HttpGet("GetParameters/{userID}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetParameters(int userID)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync($"http://data:3333/getVitals?userID={userID}"))
+                {
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var parameters = await response.Content.ReadFromJsonAsync<Parameters>();
+                        return Ok(parameters);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        var errorResponse = await response.Content.ReadAsStringAsync();
+                        return NotFound(errorResponse);
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    {
+                        return StatusCode(500);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+        }
+        
+
         /// <summary>
         /// Gets user's health parameters.
         /// </summary>
@@ -216,6 +257,9 @@ namespace gateway.Controllers
                 }
             }
         }
+
+        #endregion
+
         /// <summary>
         /// Gets user's friends.
         /// </summary>
@@ -294,112 +338,24 @@ namespace gateway.Controllers
         }
 
         /// <summary>
-        /// Gets parameters for specific user.
+        /// Gets FCM token for specific user.
         /// </summary>
         /// <param name="userID">User ID</param>
-        /// <returns>Vitals.</returns>
+        /// <returns>User.</returns>
         /// <response code="404">User not found.</response>
-        [HttpGet("GetVitals/{userID}")]
+        [HttpGet("GetFcm/{userID}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetVitals(int userID)
-        {
-
-            Parameters parameters = new Parameters();
-
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getVitals?userID={userID}"))
-                {
-                    
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var resp = await response.Content.ReadFromJsonAsync<Parameters>();
-                        if(resp != null){
-                            parameters = resp;
-                        }
-                        else {
-                            return StatusCode(500);
-                        }
-
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-                        
-            }
-            SleepData sleepData = new SleepData();
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getSleepHoursForDay?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var sleepHours = await response.Content.ReadFromJsonAsync<List<SleepData>>();
-                        if(sleepHours != null){
-                            sleepData = sleepHours[0];
-                        }
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-
-            var obj = new 
-            {
-                sys = parameters.Sys,
-                dias = parameters.Dias, 
-                pulse = parameters.Pulse,
-                sleepHours = sleepData.SleepHours,
-                timestampVitals = parameters.Timestamp, 
-                timestampSleepData = sleepData.Timestamp,
-                userID = parameters.UserID
-            };
-            return Ok(obj);
-        }
-
-        /// <summary>
-        /// Gets parameters for specific user.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Vitals.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetParameters/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetParameters(int userID)
+        public async Task<IActionResult> GetFcm(int userID)
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getVitals?userID={userID}"))
+                using (var response = await httpClient.GetAsync($"http://users:6080/user/getFcm/{userID}"))
                 {
 
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var parameters = await response.Content.ReadFromJsonAsync<Parameters>();
+                        var parameters = await response.Content.ReadFromJsonAsync<FcmToken>();
                         return Ok(parameters);
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -420,25 +376,44 @@ namespace gateway.Controllers
         }
 
         /// <summary>
-        /// Gets pulse for last 24h.
+        /// Add FCM token for specific user.
         /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Pulse values for last 24h.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetPulseForDay/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        /// <param name="fcmToken">User ID and FCM</param>
+        /// <returns>True if data is successfully added. Otherwise, false.</returns>
+        /// <remarks>
+        ///     Sample request:
+        ///         
+        ///         POST /Gateway
+        ///         {
+        /// {
+        ///     "_id": 2,
+        ///     "fcm": "32fsd13214rfe"
+        /// }
+        ///         }
+        ///
+        ///</remarks>
+        /// <response code="400">Post parameters not defined.</response>
+        /// <response code="200">Data successfully added.</response>
+
+        [HttpPost("PostFcm")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPulseForDay(int userID)
+        public async Task<IActionResult> PostFcm([FromBody] FcmToken fcmToken)
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getPulseForDay?userID={userID}"))
+                var serializedObject = JsonConvert.SerializeObject(fcmToken);
+                var content = new StringContent(serializedObject, Encoding.UTF8, "application/json");
+                Console.WriteLine(serializedObject);
+            
+                using (var response = await httpClient.PostAsync("http://users:6080/user/addFcm", content))
                 {
-
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var pulseArr = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(pulseArr);
+                        var apiResponse = await response.Content.ReadFromJsonAsync<int>();
+                        //await this.PublishVitals(serializedObject);
+
+                        return Ok();
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
@@ -449,34 +424,50 @@ namespace gateway.Controllers
                     {
                         return StatusCode(500);
                     }
-                    else
-                    {
-                        return BadRequest();
-                    }
+
                 }
+
+                return BadRequest();
             }
         }
 
-        /// <summary>
-        /// Gets pulse for last 7 days.
+            /// <summary>
+        /// Update FCM token for specific user.
         /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Pulse values for last 7 days.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetPulseForWeek/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        /// <param name="fcm">User ID and FCM</param>
+        /// <returns>True if data is successfully added. Otherwise, false.</returns>
+        /// <remarks>
+        ///     Sample request:
+        ///         
+        ///         POST /Gateway
+        ///         {
+        /// {
+        ///     "_id": 2,
+        ///     "fcm": "32fsd13214rfe"
+        /// }
+        ///         }
+        ///
+        ///</remarks>
+        /// <response code="400">Put parameters not defined.</response>
+        /// <response code="200">Data successfully added.</response>
+
+        [HttpPost("PutFcm")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPulseForWeek(int userID)
+        public async Task<IActionResult> PutFcm([FromBody] FcmToken fcm)
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getPulseForWeek?userID={userID}"))
+                var serializedObject = JsonConvert.SerializeObject(fcm);
+                var content = new StringContent(serializedObject, Encoding.UTF8, "application/json");
+            
+                using (var response = await httpClient.PutAsync("http://users:6080/user/updateFcm", content))
                 {
-
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
-                        var pulseArr = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(pulseArr);
+                        var apiResponse = await response.Content.ReadFromJsonAsync<int>();
+                        //await this.PublishVitals(serializedObject);
+                        return Ok();
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                     {
@@ -487,279 +478,13 @@ namespace gateway.Controllers
                     {
                         return StatusCode(500);
                     }
-                    else
-                    {
-                        return BadRequest();
-                    }
+
                 }
+
+                return BadRequest();
             }
         }
 
-        /// <summary>
-        /// Gets sys pressure for last 24h.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Sys pressure values for last 24h.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetSysPressureForDay/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSysPressureForDay(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getSysPressureForDay?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var sysPressureArr = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(sysPressureArr);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets sys pressure for last 7 days.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Sys pressure values for last 7 days.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetSysPressureForWeek/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSysPressureForWeek(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getSysPressureForWeek?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var sysPressureArr = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(sysPressureArr);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets dias pressure for last 24h.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Dias pressure values for last 24h.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetDiasPressureForDay/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDiasPressureForDay(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getDiasPressureForDay?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var diasPressureArr = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(diasPressureArr);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets dias pressure for last 7 days.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Dias pressure values for last 7 days.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetDiasPressureForWeek/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDiasPressureForWeek(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getDiasPressureForWeek?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var diasPressureArr = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(diasPressureArr);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets sleep hours for last 7 days.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Sleep hours for last 7 days.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetSleepHoursForWeek/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSleepHoursForWeek(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getSleepHoursForWeek?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var sleepHours = await response.Content.ReadFromJsonAsync<List<SleepData>>();
-                        return Ok(sleepHours);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets calories for last 7 days.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Burned calories for last 7 days.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetCaloriesForWeek/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCaloriesForWeek(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getCaloriesForWeek?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var calories = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(calories);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets steps for last 7 days.
-        /// </summary>
-        /// <param name="userID">User ID</param>
-        /// <returns>Steps for last 7 days.</returns>
-        /// <response code="404">User not found.</response>
-        [HttpGet("GetStepsForWeek/{userID}")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStepsForWeek(int userID)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync($"http://data:3333/getStepsForWeek?userID={userID}"))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        var sleepHours = await response.Content.ReadFromJsonAsync<List<OneParameter>>();
-                        return Ok(sleepHours);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        var errorResponse = await response.Content.ReadAsStringAsync();
-                        return NotFound(errorResponse);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        return StatusCode(500);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Gets vitals and recommended YouTube resource for specific user.
@@ -878,7 +603,8 @@ namespace gateway.Controllers
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var apiResponse = await response.Content.ReadFromJsonAsync<bool>();
-                        await this.PublishVitals(serializedObject);
+                        Console.WriteLine("MQTT VITALS" + serializedObject);
+                        await this.PublishVitals("projekat/vitals", serializedObject);
                         return Ok(apiResponse);
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -931,7 +657,8 @@ namespace gateway.Controllers
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var apiResponse = await response.Content.ReadFromJsonAsync<bool>();
-                        //await this.PublishVitals(serializedObject);
+                        Console.WriteLine("MQTT SLEEP HOURS", serializedObject);
+                        await this.PublishVitals("projekat/sleepHours", serializedObject);
                         return Ok(apiResponse);
                     }
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -984,7 +711,8 @@ namespace gateway.Controllers
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var apiResponse = await response.Content.ReadFromJsonAsync<bool>();
-                        //await this.PublishVitals(serializedObject);
+                        Console.WriteLine("MQTT STEPS", serializedObject);
+                        await this.PublishVitals("projekat/steps", serializedObject);
                         var obj = new
                         {
                             result = apiResponse
@@ -1164,6 +892,36 @@ namespace gateway.Controllers
 
                 if(calories != -1.0f)
                 {
+                    var caloriesObj = new {
+                        calories = calories,
+                        userID = activityParameters.UserID
+                    };
+                    var serializedObjCalories = JsonConvert.SerializeObject(caloriesObj);
+                    Console.WriteLine("MQTT CALORIES" + serializedObjCalories);
+                    await PublishVitals("projekat/calories", serializedObjCalories);
+                    var putData = new {
+                        _id = activityParameters.UserID,
+                        points = calories / 10
+                    };
+                    var serializedPoints = JsonConvert.SerializeObject(putData);
+                    var putContent = new StringContent(serializedPoints, Encoding.UTF8, "application/json");
+                    using(var response = await httpClient.PutAsync("http://users:6080/user/addPoints", putContent))
+                    {
+                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            var resp = await response.Content.ReadFromJsonAsync<double>();
+                        }
+                        else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                        {
+                            var errorResponse = await response.Content.ReadAsStringAsync();
+                            return NotFound(errorResponse);
+                        }
+                        else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                        {
+                            return StatusCode(500);
+                        }
+                    }
+
                     var postData = new {
                         calories = calories,
                         userID = activityParameters.UserID
@@ -1324,7 +1082,7 @@ namespace gateway.Controllers
             }
         }
 
-        private async Task PublishVitals(string payload)
+        private async Task PublishVitals(string topic, string payload)
         {
             var mqttFactory = new MqttFactory();
 
@@ -1350,7 +1108,7 @@ namespace gateway.Controllers
                 Console.WriteLine(response.ResultCode);
 
                 var applicationMessage = new MqttApplicationMessageBuilder()
-                    .WithTopic("projekat/vitals")
+                    .WithTopic(topic)
                     .WithPayload(payload)
                     .Build();
                 await mqttClient.PublishAsync(applicationMessage, CancellationToken.None);

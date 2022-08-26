@@ -7,11 +7,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -25,18 +31,24 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.navigation.NavigationView
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentHomeBinding
 import elfak.mosis.health.ui.bloodpressure.BloodPressureViewModel
+import elfak.mosis.health.ui.calories.CaloriesViewModel
 import elfak.mosis.health.ui.heartrate.HeartRateViewModel
 import elfak.mosis.health.ui.sleep.SleepViewModel
 import elfak.mosis.health.ui.stepcounter.StepCounterService
+import elfak.mosis.health.ui.user.model.UserViewModel
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.firstTime
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.LocalDateTime
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -45,9 +57,11 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val userViewModel: UserViewModel by activityViewModels()
     private val bloodPressureViewModel: BloodPressureViewModel by activityViewModels()
     private val heartRateViewModel: HeartRateViewModel by activityViewModels()
     private val sleepViewModel: SleepViewModel by activityViewModels()
+    private val caloriesViewModel: CaloriesViewModel by activityViewModels()
 
 
     private var values: MutableList<String> = mutableListOf("0", "0", "0", "0")
@@ -81,8 +95,8 @@ class HomeFragment : Fragment() {
 
         //http
         val queue = Volley.newRequestQueue(view.context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url2 = "http://localhost:5000/api/Gateway/GetAllParameters/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/${userViewModel.currentUser?._id}"
+        val url2 = "http://localhost:5000/api/Gateway/GetAllParameters/${userViewModel.currentUser?._id}"
 
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, url2, null,
             Response.Listener { response ->
@@ -90,24 +104,33 @@ class HomeFragment : Fragment() {
                 val sys = response["sys"]
                 val pulse = response["pulse"]
                 val dias = response["dias"]
-                val time = response["timestampVitals"]
-                val timestampSleepData = response["timestampSleepData"]
-                val sleepHours = response["sleepHours"]
-                val minutes = sleepHours as Double * 60
+                val time = response["timestamp"]
+                val calories = if(response["calories"] is Double) response["calories"] as Double else response["calories"] as Int
+                //val steps = response["steps"]
+                var sleepHours : Double = 0.0
+                if (response["sleepHours"] is Double)
+                    sleepHours = response["sleepHours"] as Double
+                else
+                    (response["sleepHours"] as Int).toDouble()
+
+                val minutes = sleepHours * 60.0
                 val hours = TimeUnit.MINUTES.toHours(minutes.toLong())
                 val remainMinutes = minutes - TimeUnit.HOURS.toMinutes(hours)
                 val sleepHoursString = String.format("%02d h %02d min", hours, remainMinutes.toInt())
 
                 bloodPressureViewModel.updateLastValues(sys as Int, dias as Int, time as Long)
                 heartRateViewModel.updateLastValues(pulse as Int, time.toLong())
-                sleepViewModel.updateLastValue(sleepHoursString, timestampSleepData.toString())
+                sleepViewModel.updateLastValue(sleepHoursString, time.toString())
+                caloriesViewModel.updateLastValue(calories.toFloat(), time.toString())
 
                 values[0] = pulse.toString()
                 values[1] = sleepHoursString
                 values[2] = "${sys.toString()}/${dias.toString()}"
+                values[3] = calories.toString()
                 homeAdapter.notifyItemChanged(0)
                 homeAdapter.notifyItemChanged(1)
                 homeAdapter.notifyItemChanged(2)
+                homeAdapter.notifyItemChanged(3)
 
             },
             Response.ErrorListener { error ->
@@ -148,7 +171,8 @@ class HomeFragment : Fragment() {
 //        }
 
 
-        val prefs = SharedPreferencesHelper.customPreference(view.context, "Step_data")
+        val prefs = SharedPreferencesHelper.customPreference(view.context, "First time")
+        //prefs.firstTime = true
 
         val listener =
             OnSharedPreferenceChangeListener { prefs, key ->
@@ -158,6 +182,35 @@ class HomeFragment : Fragment() {
 
         prefs.registerOnSharedPreferenceChangeListener(listener)
 
+        val navView: NavigationView? = activity?.findViewById(R.id.nav_view) ?: null
+        if(navView != null) {
+            val headerView: View = navView.getHeaderView(0)
+            val usernameHeader: TextView = headerView.findViewById(R.id.textViewUsername)
+
+            val headerImgProfile: ImageView = headerView.findViewById(R.id.imageViewProfile)
+            usernameHeader.text = userViewModel.currentUser!!.username
+
+            val executor = Executors.newSingleThreadExecutor()
+            val handler = Handler(Looper.getMainLooper())
+            var image: Bitmap? = null
+
+            executor.execute{
+                val imageUrl = userViewModel.currentUser?.imgSrc
+                //val imageUrl = "https://docs.google.com/uc?id=1nBY3lcEQGKQGXb5SHFjqE9Sj56-kPNiw"
+                try {
+                    val `in` = java.net.URL(imageUrl).openStream()
+                    image = BitmapFactory.decodeStream(`in`)
+
+                    handler.post{
+                        headerImgProfile.setImageBitmap(image)
+                    }
+                }
+                catch(e: Exception){
+                    e.printStackTrace()
+                }
+            }
+        }
+
         binding.progressBar.setOnClickListener {
             findNavController().navigate(R.id.action_HomeFragment_to_StepsFragment)
         }
@@ -166,6 +219,8 @@ class HomeFragment : Fragment() {
         binding.progressBar.max = 100
 
     }
+
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -16,7 +16,17 @@ class grpcClient(object):
         print(self.stub)
 
     def get_url(self, eventName, params):
-        message = pb2.NotifyRequest(eventName = eventName, params = params)
+        message = pb2.NotifyRequestVitals(eventName = eventName, params = params)
         print(f'{message}', flush=True)
-        return self.stub.NotifyEvent(message)
+        return self.stub.NotifyEventVitals(message)
+
+    def get_url_calories(self, eventName, params):
+        message = pb2.NotifyRequestCalories(eventName = eventName, params = params)
+        print(f'{message}', flush=True)
+        return self.stub.NotifyEventCalories(message)
+
+    def get_url_pulse(self, eventName, params):
+        message = pb2.NotifyRequestPulse(eventName = eventName, params = params)
+        print(f'{message}', flush=True)
+        return self.stub.NotifyEventPulse(message)
 

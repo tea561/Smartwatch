@@ -6,12 +6,35 @@ package notification;
 
 service Notification {
   // Sends a greeting
-  rpc NotifyEvent (NotifyRequest) returns (NotifyReply);
+  rpc NotifyEventVitals (NotifyRequestVitals) returns (NotifyReply);
+  rpc NotifyEventCalories (NotifyRequestCalories) returns (NotifyReply);
+  rpc NotifyEventPulse (NotifyRequestPulse) returns (NotifyReply);
+
 }
 
-message NotifyRequest {
+message NotifyRequestVitals {
   string eventName = 1;
   Parameters params = 2;
+}
+
+message NotifyRequestCalories {
+  string eventName = 1;
+  BurnedCalories params = 2;
+}
+
+message NotifyRequestPulse {
+  string eventName = 1;
+  Pulse params = 2;
+}
+
+message BurnedCalories {
+  float calories = 1;
+  int32 userID = 2;
+}
+
+message Pulse {
+  float pulse = 1;
+  int32 userID = 2;
 }
 
 message Parameters {

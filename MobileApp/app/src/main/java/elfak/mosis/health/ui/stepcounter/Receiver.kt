@@ -10,6 +10,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper._id
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.stepCount
 import org.json.JSONObject
 import java.io.Console
@@ -40,7 +41,7 @@ class Receiver : BroadcastReceiver() {
             val postData = JSONObject()
             postData.put("value", prefs.stepCount)
             postData.put("time", formatted)
-            postData.put("userID", 51)
+            postData.put("userID", prefs._id)
             Log.i("STEPS", postData.toString())
             val jsonObjectRequest = JsonObjectRequest(
                 Request.Method.POST, url2, postData,

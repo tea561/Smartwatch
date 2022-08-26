@@ -24,11 +24,12 @@ class SleepViewModel: ViewModel() {
     private val _fetchingSleepDataState by lazy { MutableLiveData<FetchingState>(FetchingState.Idle) }
     val fetchingSleepDataState: LiveData<FetchingState> = _fetchingSleepDataState
 
-    fun getSleepData(context: Context) {
+    fun getSleepData(context: Context, _id: Int) {
+        _fetchingSleepDataState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetSleephoursForWeek/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetDailySumForWeek/sleep-hours/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetDailySumForWeek/sleep-hours/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -37,7 +38,7 @@ class SleepViewModel: ViewModel() {
                 for(i in 0 until response.length()){
                     val element = response.getJSONObject(i)
                     Log.i("JSON", element.toString())
-                    val value = element.get("sleepHours")
+                    val value = element.get("value")
                     if(value.toString() == "null"){
                         weeklySleepEntries.add(BarEntry(i.toFloat(), 0f))
                     }

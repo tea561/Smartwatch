@@ -20,12 +20,14 @@ import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentBloodPressureDayBinding
 import elfak.mosis.health.databinding.FragmentSleepBinding
 import elfak.mosis.health.ui.heartrate.FetchingState
+import elfak.mosis.health.ui.user.model.UserViewModel
 import java.text.DateFormatSymbols
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 class SleepFragment : Fragment() {
 
+    private val userViewModel: UserViewModel by activityViewModels()
     private val sleepViewModel: SleepViewModel by activityViewModels()
     private var _binding: FragmentSleepBinding? = null
     private val binding get() = _binding!!
@@ -48,7 +50,7 @@ class SleepFragment : Fragment() {
         binding.textViewTodayHours.text = sleepViewModel.lastValue.value
 
         val chart = view.findViewById<BarChart>(R.id.bar_chart)
-        sleepViewModel.getSleepData(view.context)
+        userViewModel.currentUser?.let { sleepViewModel.getSleepData(view.context, it._id) }
 
         chart.axisRight.isEnabled = false
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM

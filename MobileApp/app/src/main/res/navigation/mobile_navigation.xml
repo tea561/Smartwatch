@@ -10,11 +10,24 @@
         android:name="elfak.mosis.health.ui.user.CreateUserFragment"
         android:label="Create user"
         tools:layout="@layout/fragment_create_user" >
-    <action android:id="@+id/action_CreateFragment_to_HomeFragment"
-        app:destination="@id/nav_home" />
+
+        <action android:id="@+id/action_CreateFragment_to_WelcomeFragment"
+            app:destination="@id/WelcomeFragment" />
+
+        <action android:id="@+id/action_CreateFragment_to_HomeFragment"
+            app:destination="@id/nav_home" />
 
     </fragment>
 
+    <fragment
+        android:id="@+id/WelcomeFragment"
+        android:name="elfak.mosis.health.ui.user.WelcomeFragment"
+        android:label="Welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action android:id="@+id/action_WelcomeFragment_to_HomeFragment"
+            app:destination="@id/nav_home" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_home"

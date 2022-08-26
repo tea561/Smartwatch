@@ -24,6 +24,12 @@ class HeartRateViewModel : ViewModel() {
     private val _lastValue by lazy { MutableLiveData(0)}
     var lastValue: LiveData<Int> = _lastValue
 
+    private val _avgValue by lazy { MutableLiveData(0)}
+    var avgValue: LiveData<Int> = _avgValue
+
+    private val _maxValue by lazy { MutableLiveData(0)}
+    var maxValue: LiveData<Int> = _maxValue
+
     private val _lastTime by lazy { MutableLiveData(LocalDateTime.now())}
     var lastTime: LiveData<LocalDateTime> = _lastTime
 
@@ -33,11 +39,12 @@ class HeartRateViewModel : ViewModel() {
     private val _fetchingDailyDataState by lazy { MutableLiveData<FetchingState>(FetchingState.Idle) }
     val fetchingDailyDataState: LiveData<FetchingState> = _fetchingDailyDataState
 
-    fun getWeeklyData(context: Context) {
+    fun getWeeklyData(context: Context, _id:Int) {
+        _fetchingWeeklyDataState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetPulseForWeek/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameterForWeek/pulse/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetParameterForWeek/pulse/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -71,11 +78,12 @@ class HeartRateViewModel : ViewModel() {
         queue.add(jsonArrayRequest)
     }
 
-    fun getDailyData(context: Context) {
+    fun getDailyData(context: Context, _id: Int) {
+        _fetchingDailyDataState.value = FetchingState.Idle
         //http
         val queue = Volley.newRequestQueue(context)
-        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameters/9"
-        val url = "http://localhost:5000/api/Gateway/GetPulseForDay/9"
+        //val url2 = "http://192.168.1.5:5000/api/Gateway/GetParameterForDay/pulse/$_id"
+        val url = "http://localhost:5000/api/Gateway/GetParameterForDay/pulse/$_id"
 
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET, url, null,
@@ -115,6 +123,14 @@ class HeartRateViewModel : ViewModel() {
     fun updateLastValues(pulse: Int, time: Long){
         _lastValue.value = pulse
         _lastTime.value = LocalDateTime.ofInstant(Instant.ofEpochMilli(time), TimeZone.getDefault().toZoneId())
+    }
+
+    fun updateAvgValue(pulse: Int) {
+        _avgValue.value = pulse
+    }
+
+    fun updateMaxValue(pulse: Int){
+        _maxValue.value = pulse
     }
 }
 

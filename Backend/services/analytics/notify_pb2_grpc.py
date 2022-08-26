@@ -14,9 +14,19 @@ class NotificationStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.NotifyEvent = channel.unary_unary(
-                '/notification.Notification/NotifyEvent',
-                request_serializer=notify__pb2.NotifyRequest.SerializeToString,
+        self.NotifyEventVitals = channel.unary_unary(
+                '/notification.Notification/NotifyEventVitals',
+                request_serializer=notify__pb2.NotifyRequestVitals.SerializeToString,
+                response_deserializer=notify__pb2.NotifyReply.FromString,
+                )
+        self.NotifyEventCalories = channel.unary_unary(
+                '/notification.Notification/NotifyEventCalories',
+                request_serializer=notify__pb2.NotifyRequestCalories.SerializeToString,
+                response_deserializer=notify__pb2.NotifyReply.FromString,
+                )
+        self.NotifyEventPulse = channel.unary_unary(
+                '/notification.Notification/NotifyEventPulse',
+                request_serializer=notify__pb2.NotifyRequestPulse.SerializeToString,
                 response_deserializer=notify__pb2.NotifyReply.FromString,
                 )
 
@@ -24,7 +34,19 @@ class NotificationStub(object):
 class NotificationServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def NotifyEvent(self, request, context):
+    def NotifyEventVitals(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def NotifyEventCalories(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def NotifyEventPulse(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,9 +55,19 @@ class NotificationServicer(object):
 
 def add_NotificationServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'NotifyEvent': grpc.unary_unary_rpc_method_handler(
-                    servicer.NotifyEvent,
-                    request_deserializer=notify__pb2.NotifyRequest.FromString,
+            'NotifyEventVitals': grpc.unary_unary_rpc_method_handler(
+                    servicer.NotifyEventVitals,
+                    request_deserializer=notify__pb2.NotifyRequestVitals.FromString,
+                    response_serializer=notify__pb2.NotifyReply.SerializeToString,
+            ),
+            'NotifyEventCalories': grpc.unary_unary_rpc_method_handler(
+                    servicer.NotifyEventCalories,
+                    request_deserializer=notify__pb2.NotifyRequestCalories.FromString,
+                    response_serializer=notify__pb2.NotifyReply.SerializeToString,
+            ),
+            'NotifyEventPulse': grpc.unary_unary_rpc_method_handler(
+                    servicer.NotifyEventPulse,
+                    request_deserializer=notify__pb2.NotifyRequestPulse.FromString,
                     response_serializer=notify__pb2.NotifyReply.SerializeToString,
             ),
     }
@@ -49,7 +81,7 @@ class Notification(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def NotifyEvent(request,
+    def NotifyEventVitals(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +91,42 @@ class Notification(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/notification.Notification/NotifyEvent',
-            notify__pb2.NotifyRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/notification.Notification/NotifyEventVitals',
+            notify__pb2.NotifyRequestVitals.SerializeToString,
+            notify__pb2.NotifyReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def NotifyEventCalories(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/notification.Notification/NotifyEventCalories',
+            notify__pb2.NotifyRequestCalories.SerializeToString,
+            notify__pb2.NotifyReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def NotifyEventPulse(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/notification.Notification/NotifyEventPulse',
+            notify__pb2.NotifyRequestPulse.SerializeToString,
             notify__pb2.NotifyReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

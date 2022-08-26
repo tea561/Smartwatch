@@ -9,13 +9,12 @@
 
     <LinearLayout
         android:layout_width="393dp"
-        android:layout_height="166dp"
+        android:layout_height="170dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/rectangle"
-        android:backgroundTint="@color/blue"
+
         android:orientation="vertical">
 
         <TextView
@@ -24,8 +23,9 @@
             android:layout_height="wrap_content"
             android:text=" 17 Jan 2022 22:30h"
             android:textAlignment="viewStart"
-            android:textColor="@color/gray_light"
-            android:textSize="20sp" />
+            android:textColor="@color/gray_dark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,11 +34,11 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="155dp"
-                android:layout_height="130dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/progressbar"
-                android:backgroundTint="#66FFFFFF"
+                android:background="@drawable/circle"
+                android:backgroundTint="@color/transparent_purple"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -58,15 +58,16 @@
                     android:text="125"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="48sp" />
+                    android:textSize="48sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="155dp"
-                android:layout_height="130dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/progressbar"
-                android:backgroundTint="#66FFFFFF"
+                android:background="@drawable/circle"
+                android:backgroundTint="#B556CFE1"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -86,7 +87,8 @@
                     android:text="81"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="48sp" />
+                    android:textSize="48sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
 

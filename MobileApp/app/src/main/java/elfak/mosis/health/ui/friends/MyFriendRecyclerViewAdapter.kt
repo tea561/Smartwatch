@@ -2,6 +2,7 @@ package elfak.mosis.health.ui.friends
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Handler
 import android.os.Looper
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -34,8 +35,7 @@ class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
     }
 
     fun setData(newData:List<User>){
-        //TODO: sortiranje po ranku
-        //newData.sortedWith(Comparator{lhs, rhs -> if(lhs.rank > rhs.rank) -1 else 1} )
+        newData.sortedBy { it.rank }
         values = newData
         notifyDataSetChanged()
     }
@@ -45,29 +45,27 @@ class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
         holder.currentFriend = item
         holder.idView.text = "${item.username}"
         holder.contentView.text = item.username
-        //TODO: add rank
-        //holder.buttonRank.text = item.rank.toString()
-        holder.buttonRank.text = (10 as Int).toString()
+        holder.buttonRank.text = item.rank.toString()
 
         //set img
-//        val executor = Executors.newSingleThreadExecutor()
-//        val handler = Handler(Looper.getMainLooper())
-//        var image: Bitmap? = null
-//
-//        executor.execute{
-//            val imageUrl = item.imgUrl
-//            try {
-//                val `in` = java.net.URL(imageUrl).openStream()
-//                image = BitmapFactory.decodeStream(`in`)
-//
-//                handler.post{
-//                    holder.imageViewFriend.setImageBitmap(image)
-//                }
-//            }
-//            catch(e: Exception){
-//                e.printStackTrace()
-//            }
-//        }
+        val executor = Executors.newSingleThreadExecutor()
+        val handler = Handler(Looper.getMainLooper())
+        var image: Bitmap? = null
+
+        executor.execute{
+            val imageUrl = item.imgSrc
+            try {
+                val `in` = java.net.URL(imageUrl).openStream()
+                image = BitmapFactory.decodeStream(`in`)
+
+                handler.post{
+                    holder.imageViewFriend.setImageBitmap(image)
+                }
+            }
+            catch(e: Exception){
+                e.printStackTrace()
+            }
+        }
 
     }
 
