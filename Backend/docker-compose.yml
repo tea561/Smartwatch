@@ -145,6 +145,7 @@ services:
     build:
       context: ./services/notification
     image: notification
+    restart: unless-stopped
     networks:
       healthapp:
         aliases:

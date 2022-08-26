@@ -64,7 +64,7 @@ namespace notification.Services
             dynamic bodyObj = JsonConvert.DeserializeObject(notificationBody);
             if(bodyObj != null)
             {
-                Console.WriteLine(bodyObj);
+                Console.WriteLine("BODY" + bodyObj);
                 if(title == "Average pulse" || title == "Max pulse")
                 {
                     message = new Message()
@@ -72,7 +72,7 @@ namespace notification.Services
                         Data = new Dictionary<string, string>()
                         {
                             {"event", title},
-                            {"pulse", bodyObj.pulse}
+                            {"pulse", bodyObj.pulse.ToString()}
                         },
                         Token = token,
                     };
@@ -136,8 +136,10 @@ namespace notification.Services
                         Token = token,
                     };
                 }
+                if(message != null)
+                    Console.WriteLine(message.ToString());
             }
-            Console.WriteLine(message.ToString());
+            
 
             return message;
         }
@@ -146,7 +148,7 @@ namespace notification.Services
         {
             dynamic obj = JsonConvert.DeserializeObject(body);
             var userID = obj.userID;
-            Console.WriteLine(userID);
+            //Console.WriteLine(userID);
 
             using (var httpClient = new HttpClient())
             {
@@ -157,7 +159,7 @@ namespace notification.Services
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var parameters = await response.Content.ReadFromJsonAsync<FcmToken>();
-                        Console.Write(parameters);
+                        Console.Write(parameters.Fcm);
                         if(parameters != null){
                             var resss = FirebaseMessaging.DefaultInstance.SendAsync(CreateNotification(title, body, parameters.Fcm)).Result;
                             Console.WriteLine(resss);

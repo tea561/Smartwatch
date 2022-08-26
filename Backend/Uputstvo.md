@@ -8,9 +8,6 @@ Sistem za analizu fizioloških podataka dobijenih sa pametnog sata ili narukvice
 
 Blood Pressure Data ([https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/EA1SAP/VBHTIQ&version=1.1](https://dataverse.harvard.edu/file.xhtml?persistentId=doi:10.7910/DVN/EA1SAP/VBHTIQ&version=1.1))
 
-### API:
-
-Youtube API
 
 ### Mikroservisi:
 
@@ -19,7 +16,12 @@ Youtube API
 - Gateway mikroservis
 
 - Analytics mikroservis
+
 - Notification mikroservis
+
+- Users mikroservis
+
+- Calories mikroservis
 
 ### Pomoćna aplikacija:
 
@@ -96,6 +98,11 @@ Stream Format: json
 - Sink: mqtt
 - MQTT broker address: tcp://mqtt:1883
 - MQTT topic: analysis/low-pressure
+
+
+## Pokretanje mobilne aplikacije i registrovanje
+Nakon registrovanja, biće prikazan ekran koji sadrži HealthID
+
 ## Pokretanje pomoćne aplikacije
 
 U folderu ./Projekat2/sensor-app:
@@ -104,12 +111,6 @@ U folderu ./Projekat2/sensor-app:
 
 npm install
 
-node smartwatch.js
+node smartwatch.js HEALTHID_DOBIJEN_U_MOBILNOJ_APLIKACIJI
 
 ```
-
- ## Prikaz
- - Analytics mikroservis: 
-![Analytics](./resources/analytics.png)
- - Notification mikroservis: 
-![Notification](./resources/notification.png)
