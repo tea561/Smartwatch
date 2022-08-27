@@ -31,7 +31,7 @@ class FCMService : FirebaseMessagingService() {
 
         val putData = JSONObject()
         putData.put("fcm", token)
-        val prefs = SharedPreferencesHelper.customPreference(this, "Id")
+        val prefs = SharedPreferencesHelper.customPreference(this, "First time")
         putData.put("_id", prefs._id)
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.PUT, url2, putData,

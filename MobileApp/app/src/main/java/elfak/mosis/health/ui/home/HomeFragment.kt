@@ -31,6 +31,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentHomeBinding
@@ -50,6 +51,7 @@ import java.net.URL
 import java.time.LocalDateTime
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 
 class HomeFragment : Fragment() {
@@ -105,7 +107,9 @@ class HomeFragment : Fragment() {
                 val pulse = response["pulse"]
                 val dias = response["dias"]
                 val time = response["timestamp"]
-                val calories = if(response["calories"] is Double) response["calories"] as Double else response["calories"] as Int
+                var calories = if(response["calories"] is Double) response["calories"] as Double else response["calories"] as Int
+                if(calories is Double)
+                    calories = (calories * 100.0).roundToInt() / 100.0
                 //val steps = response["steps"]
                 var sleepHours : Double = 0.0
                 if (response["sleepHours"] is Double)
@@ -176,11 +180,19 @@ class HomeFragment : Fragment() {
 
         val listener =
             OnSharedPreferenceChangeListener { prefs, key ->
+                Log.i("STEPS", "LISTENER")
                 binding.progressBar.progress = prefs.stepCount / 100
                 binding.textViewProgress.text = prefs.stepCount.toString()
             }
 
         prefs.registerOnSharedPreferenceChangeListener(listener)
+
+        binding.progressBar.setOnClickListener {
+            findNavController().navigate(R.id.action_HomeFragment_to_StepsFragment)
+        }
+        binding.progressBar.progress = prefs.stepCount / 100
+        binding.textViewProgress.text = prefs.stepCount.toString()
+        binding.progressBar.max = 100
 
         val navView: NavigationView? = activity?.findViewById(R.id.nav_view) ?: null
         if(navView != null) {
@@ -194,29 +206,8 @@ class HomeFragment : Fragment() {
             val handler = Handler(Looper.getMainLooper())
             var image: Bitmap? = null
 
-            executor.execute{
-                val imageUrl = userViewModel.currentUser?.imgSrc
-                //val imageUrl = "https://docs.google.com/uc?id=1nBY3lcEQGKQGXb5SHFjqE9Sj56-kPNiw"
-                try {
-                    val `in` = java.net.URL(imageUrl).openStream()
-                    image = BitmapFactory.decodeStream(`in`)
-
-                    handler.post{
-                        headerImgProfile.setImageBitmap(image)
-                    }
-                }
-                catch(e: Exception){
-                    e.printStackTrace()
-                }
-            }
+            Glide.with(headerView).load(userViewModel.currentUser!!.imgSrc).into(headerImgProfile)
         }
-
-        binding.progressBar.setOnClickListener {
-            findNavController().navigate(R.id.action_HomeFragment_to_StepsFragment)
-        }
-        binding.progressBar.progress = prefs.stepCount / 100
-        binding.textViewProgress.text = prefs.stepCount.toString()
-        binding.progressBar.max = 100
 
     }
 
@@ -247,6 +238,7 @@ class HomeFragment : Fragment() {
 
     private val stepCountReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.i("STEPS", "Bundle")
             val bundle = intent.extras
             if (bundle != null) {
                 if (bundle.containsKey("steps")) {
@@ -286,7 +278,7 @@ class HomeFragment : Fragment() {
     }
 
     fun updateSteps() {
-        val prefs = SharedPreferencesHelper.customPreference(requireContext(), "Step_data")
+        val prefs = SharedPreferencesHelper.customPreference(requireContext(), "First time")
         binding.progressBar.progress = prefs.stepCount
     }
 }

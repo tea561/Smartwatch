@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.utils.Utils.init
@@ -47,7 +48,8 @@ class HomeAdapter(context: Context, values: List<String>) : RecyclerView.Adapter
 
         holder.image.setImageResource(images[position])
         holder.image1.setImageResource(secondImages[position])
-        holder.back.setBackgroundColor(colors[position])
+        holder.back.setBackgroundColor(ContextCompat.getColor(context,colors[position]))
+        Log.i("COLOR", colors[position].toString())
         holder.text.text = parameters[position]
         holder.back.setOnClickListener (
             Navigation.createNavigateOnClickListener(actions[position])

@@ -37,7 +37,7 @@ def add_user():
         abort(400)
     else:
         request.json['_id'] = rand.randint(1000, 9999)
-        request.json['imgSrc'] = "https://docs.google.com/uc?id=" + avatars[rand.randint(0, 7)]
+        request.json['imgSrc'] = "https://drive.google.com/uc?id=" + avatars[rand.randint(0, 7)]
         user_id = users.insert_one(request.json).inserted_id
         return str(user_id)
 

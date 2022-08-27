@@ -12,10 +12,7 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.github.mikephil.charting.data.BarEntry
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import com.google.gson.*
 import elfak.mosis.health.ui.heartrate.FetchingState
 import elfak.mosis.health.ui.user.data.User
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
@@ -47,7 +44,10 @@ class UserViewModel : ViewModel() {
             Request.Method.GET, url, null,
             Response.Listener { response ->
                 Log.i("HTTP", "Response: %s".format(response.toString()))
-                val user = Gson().fromJson(response.toString(), User::class.java)
+                val element: JsonElement =
+                    Gson().fromJson(response.toString(), JsonElement::class.java)
+                Log.i("JSON", element.toString())
+                val user = Gson().fromJson(element, User::class.java)
                 currentUser = user
                 val prefs = SharedPreferencesHelper.customPreference(context, "First time")
                 prefs._id = currentUser!!._id

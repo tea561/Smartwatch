@@ -57,7 +57,6 @@ class BloodPressureDayFragment : Fragment() {
         chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         chart.xAxis.gridColor = Color.parseColor("#C0C0C0")
         chart.axisLeft.gridColor = Color.parseColor("#C0C0C0")
-        chart.legend.isEnabled = false
         chart.description.isEnabled = false
         chart.setBorderWidth(5f)
         chart.xAxis.axisMinimum = 0f

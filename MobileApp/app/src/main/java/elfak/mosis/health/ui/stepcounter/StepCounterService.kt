@@ -69,7 +69,7 @@ class StepCounterService : Service(), SensorEventListener {
         if (event != null) {
             if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
 
-                val prefs = SharedPreferencesHelper.customPreference(this, "Step_data")
+                val prefs = SharedPreferencesHelper.customPreference(this, "First time")
 
 
                 event.values.firstOrNull()?.let {

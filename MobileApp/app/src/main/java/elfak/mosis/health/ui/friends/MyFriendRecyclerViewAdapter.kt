@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import elfak.mosis.health.R
 import elfak.mosis.health.databinding.FragmentFriendsBinding
 import elfak.mosis.health.ui.friends.placeholder.PlaceholderContent.PlaceholderItem
@@ -47,25 +49,28 @@ class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
         holder.contentView.text = item.username
         holder.buttonRank.text = item.rank.toString()
 
+        Glide.with(holder.itemView).load(item.imgSrc).centerCrop().into(holder.imageViewFriend)
+
         //set img
         val executor = Executors.newSingleThreadExecutor()
         val handler = Handler(Looper.getMainLooper())
         var image: Bitmap? = null
 
-        executor.execute{
-            val imageUrl = item.imgSrc
-            try {
-                val `in` = java.net.URL(imageUrl).openStream()
-                image = BitmapFactory.decodeStream(`in`)
-
-                handler.post{
-                    holder.imageViewFriend.setImageBitmap(image)
-                }
-            }
-            catch(e: Exception){
-                e.printStackTrace()
-            }
-        }
+//        executor.execute{
+//            Log.i("IMG SRC", item.imgSrc.toString())
+//            val imageUrl = item.imgSrc
+//            try {
+//                val `in` = java.net.URL(imageUrl).openStream()
+//                image = BitmapFactory.decodeStream(`in`)
+//
+//                handler.post{
+//                    holder.imageViewFriend.setImageBitmap(image)
+//                }
+//            }
+//            catch(e: Exception){
+//                e.printStackTrace()
+//            }
+//        }
 
     }
 

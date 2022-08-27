@@ -11,12 +11,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
@@ -33,6 +32,7 @@ import java.util.concurrent.Executors
 
 class CreateUserFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
+    private var gender: String = "m"
 
     private var _binding: FragmentCreateUserBinding? = null
     // This property is only valid between onCreateView and
@@ -70,25 +70,9 @@ class CreateUserFragment : Fragment() {
                         val headerImgProfile: ImageView = headerView.findViewById(R.id.imageViewProfile)
                         usernameHeader.text = userViewModel.currentUser!!.username
 
-                        val executor = Executors.newSingleThreadExecutor()
-                        val handler = Handler(Looper.getMainLooper())
-                        var image: Bitmap? = null
+                        Glide.with(headerView).load(userViewModel.currentUser!!.imgSrc).into(headerImgProfile)
 
-                        executor.execute{
-                            val imageUrl = userViewModel.currentUser?.imgSrc
-                            //val imageUrl = "https://docs.google.com/uc?id=1nBY3lcEQGKQGXb5SHFjqE9Sj56-kPNiw"
-                            try {
-                                val `in` = java.net.URL(imageUrl).openStream()
-                                image = BitmapFactory.decodeStream(`in`)
 
-                                handler.post{
-                                    headerImgProfile.setImageBitmap(image)
-                                }
-                            }
-                            catch(e: Exception){
-                                e.printStackTrace()
-                            }
-                        }
                     }
 
                     findNavController().navigate(R.id.action_CreateFragment_to_HomeFragment)
@@ -105,14 +89,25 @@ class CreateUserFragment : Fragment() {
         val inputAge = binding.age
         val inputHeight = binding.height
         val inputWeight = binding.weight
-        val inputGender = binding.gender
+
+        binding.radioGroup.setOnCheckedChangeListener(
+            RadioGroup.OnCheckedChangeListener { group, checkedId ->
+                Log.i("RADIO", checkedId.toString())
+                if(checkedId == R.id.radio_f)
+                    gender = "f"
+                else if(checkedId == R.id.radio_m)
+                    gender = "m"
+            }
+        )
+
+
 
         binding.buttonSignup.setOnClickListener {
             val username: String = inputUsername.text.toString()
             val ageStr: String = inputAge.text.toString()
             val heightStr: String = inputHeight.text.toString()
             val weightStr: String = inputWeight.text.toString()
-            val gender: String = inputGender.text.toString()
+
 
             if(username.isBlank() || gender.isBlank() || ageStr.isBlank() || heightStr.isBlank() || weightStr.isBlank())
             {
@@ -154,6 +149,26 @@ class CreateUserFragment : Fragment() {
             }
         }
         userViewModel.authState.observe(viewLifecycleOwner, authStateObserver)
+    }
+
+    public fun onRadioButtonClicked(view: View)
+    {
+        if (view is RadioButton) {
+            // Is the button now checked?
+            val checked = view.isChecked
+
+            // Check which radio button was clicked
+            when (view.getId()) {
+                R.id.radio_m ->
+                    if (checked) {
+                        gender = "m"
+                    }
+                R.id.radio_f ->
+                    if (checked) {
+                        gender = "f"
+                    }
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -57,8 +57,11 @@ class HeartRateViewModel : ViewModel() {
                     if(value.toString() == "null"){
                         weeklyEntries.add(Entry(i.toFloat(), 0f))
                     }
-                    else {
-                        weeklyEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
+                    else if (value is Double){
+                        weeklyEntries.add(Entry(i.toFloat(), value.toFloat()))
+                    }
+                    else if (value is Int){
+                        weeklyEntries.add(Entry(i.toFloat(), value.toFloat()))
                     }
                 }
                 _fetchingWeeklyDataState.value = FetchingState.Success

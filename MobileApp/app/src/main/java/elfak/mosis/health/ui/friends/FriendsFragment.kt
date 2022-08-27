@@ -56,7 +56,9 @@ class FriendsFragment : Fragment() {
                 noFriends.visibility = View.GONE
                 val rankingsAdapter = MyFriendRecyclerViewAdapter({ user -> openFriendProfile(user)}, emptyList())
                 recyclerViewRankings.adapter = rankingsAdapter
-                userViewModel.currentUser?.let { newData.add(it) }
+                val m: Int? = newData?.indexOfFirst { u -> u._id == userViewModel.currentUser!!._id}
+                if(m == null || m == -1)
+                    userViewModel.currentUser?.let { newData.add(it) }
                 rankingsAdapter.setData(newData)
                 Log.i("Rankings observer", newData.toString())
             }

@@ -23,7 +23,7 @@ class Receiver : BroadcastReceiver() {
 
     override fun onReceive(p0: Context?, p1: Intent?) {
         Log.i("RECEIVER", "HELLO")
-        val prefs = p0?.let { SharedPreferencesHelper.customPreference(it, "Step_data") }
+        val prefs = p0?.let { SharedPreferencesHelper.customPreference(it, "First time") }
         if (prefs != null) {
             Log.i("RECEIVER", prefs.stepCount.toString())
             //http

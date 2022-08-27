@@ -66,8 +66,11 @@ class BloodPressureViewModel : ViewModel() {
                     if(value.toString() == "null"){
                         weeklySysEntries.add(Entry(i.toFloat(), 0f))
                     }
-                    else {
-                        weeklySysEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
+                    else if (value is Double){
+                        weeklySysEntries.add(Entry(i.toFloat(), value.toFloat()))
+                    }
+                    else if (value is Int){
+                        weeklySysEntries.add(Entry(i.toFloat(), value.toFloat()))
                     }
                 }
                 _fetchingWeeklySysState.value = FetchingState.Success
