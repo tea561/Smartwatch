@@ -17,6 +17,8 @@ import elfak.mosis.health.R
 import elfak.mosis.health.ui.user.model.AuthState
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
 import elfak.mosis.health.utils.helpers.SharedPreferencesHelper._id
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.avg_pulse
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.max_pulse
 import org.json.JSONObject
 
 class FCMService : FirebaseMessagingService() {
@@ -35,28 +37,31 @@ class FCMService : FirebaseMessagingService() {
         putData.put("_id", prefs._id)
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.PUT, url2, putData,
-            Response.Listener { response ->
+            { response ->
                 Log.i("HTTP", "Response: %s".format(response.toString()))
             },
-            Response.ErrorListener { error ->
+            { error ->
                 Log.i("HTTP", "Error: ${error.toString()}")
                 AuthState.AuthError(error.message)
             }
         )
 
-        // Access the RequestQueue through your singleton class.
         queue.add(jsonObjectRequest)
-
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d("Firebase", "From: ${remoteMessage.from}")
 
-
         // Check if message contains a data payload.
         if (remoteMessage.data.isNotEmpty()) {
+            val prefs = SharedPreferencesHelper.customPreference(this, "First time")
+            if(remoteMessage.data["event"] == "Average pulse"){
+                prefs.avg_pulse = remoteMessage.data["pulse"]?.toFloat() ?: 0.0f
+            }
+            else if(remoteMessage.data["event"] == "Max pulse"){
+                prefs.max_pulse = remoteMessage.data["pulse"]?.toFloat() ?: 0.0f
+            }
             Log.d("Firebase", "Message data payload: ${remoteMessage.data}")
         }
 

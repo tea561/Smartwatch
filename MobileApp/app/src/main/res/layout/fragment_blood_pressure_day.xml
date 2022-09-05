@@ -10,7 +10,6 @@
     <LinearLayout
         android:layout_width="393dp"
         android:layout_height="170dp"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
@@ -21,6 +20,7 @@
             android:id="@+id/textViewDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text=" 17 Jan 2022 22:30h"
             android:textAlignment="viewStart"
             android:textColor="@color/gray_dark"
@@ -30,6 +30,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="-10dp"
             android:gravity="center"
             android:orientation="horizontal">
 

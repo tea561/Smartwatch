@@ -46,15 +46,15 @@ class StepCounterService : Service(), SensorEventListener {
 
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
-
         stepCounterSensor?.let {
             sensorManager.registerListener(this, stepCounterSensor, SensorManager.SENSOR_DELAY_FASTEST)
         }
+
+
+        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         stepDetectorSensor?.let {
             sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_FASTEST)
         }
-
 
 
         return START_STICKY
@@ -83,7 +83,7 @@ class StepCounterService : Service(), SensorEventListener {
                     prefs.stepCount = newStepCount
                     // Data 2: The number of nanosecond passed since the time of last boot
                     val lastDeviceBootTimeInMillis =
-                        System.currentTimeMillis() - SystemClock.elapsedRealtime()
+                    System.currentTimeMillis() - SystemClock.elapsedRealtime()
                     val sensorEventTimeInNanos =
                         event.timestamp // The number of nanosecond passed since the time of last boot
                     val sensorEventTimeInMillis = sensorEventTimeInNanos / 1000_000

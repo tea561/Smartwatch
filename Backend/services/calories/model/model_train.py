@@ -9,9 +9,9 @@ import joblib
 from sklearn.metrics import mean_squared_error
 
 # loading the data from .csv
-calories = pd.read_csv('./data/calories.csv')
+calories = pd.read_csv('../data/calories.csv')
 
-exercise_data = pd.read_csv('./data/exercise.csv')
+exercise_data = pd.read_csv('../data/exercise.csv')
 calories_data = pd.concat([exercise_data, calories['Calories']], axis = 1)
 
 #converting gender text values to numerical values
@@ -46,5 +46,5 @@ print("Mean Absolute error", mae)
 
 print("RMSE:", rmse)
 
-joblib.dump(model, 'model/model.joblib')
+joblib.dump(model, './model.joblib')
 

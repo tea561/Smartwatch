@@ -18,6 +18,7 @@ import elfak.mosis.health.databinding.FragmentFriendsBinding
 import elfak.mosis.health.ui.friends.placeholder.PlaceholderContent.PlaceholderItem
 import elfak.mosis.health.ui.user.data.User
 import java.util.concurrent.Executors
+import kotlin.math.roundToInt
 
 class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
                                   private var values: List<User> = emptyList()
@@ -37,8 +38,7 @@ class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
     }
 
     fun setData(newData:List<User>){
-        newData.sortedBy { it.rank }
-        values = newData
+        values = newData.sortedByDescending { it.rank }
         notifyDataSetChanged()
     }
 
@@ -47,7 +47,10 @@ class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
         holder.currentFriend = item
         holder.idView.text = "${item.username}"
         holder.contentView.text = item.username
-        holder.buttonRank.text = item.rank.toString()
+        var calories = item.rank
+        if(calories is Double)
+            calories = (calories * 100.0).roundToInt() / 100.0
+        holder.buttonRank.text = calories.toString()
 
         Glide.with(holder.itemView).load(item.imgSrc).centerCrop().into(holder.imageViewFriend)
 

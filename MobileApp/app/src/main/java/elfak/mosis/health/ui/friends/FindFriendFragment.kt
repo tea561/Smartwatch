@@ -41,6 +41,18 @@ class FindFriendFragment : Fragment() {
             val friendId = binding.friendId.text.toString()
             friendsViewModel.addFriend(friendId, view.context)
 
+            val findGameObserver = Observer<SendRequestState> {state ->
+                if(state is SendRequestState.Success){
+                    findNavController().navigate(R.id.action_FindFriendFragment_to_FriendsFragment)
+                    Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
+                }
+                if(state is SendRequestState.SendRequestError){
+                    Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            friendsViewModel.sendRequestState.observe(viewLifecycleOwner, findGameObserver)
+
 //            if(gameCode.length != 6){
 //                Toast.makeText(requireContext(), "Game code must be 6 characters", Toast.LENGTH_SHORT).show()
 //            }
@@ -49,17 +61,6 @@ class FindFriendFragment : Fragment() {
 //            }
         }
 
-        val findGameObserver = Observer<SendRequestState> {state ->
-            if(state is SendRequestState.Success){
-                findNavController().navigate(R.id.action_FindFriendFragment_to_FriendsFragment)
-                Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
-            }
-            if(state is SendRequestState.SendRequestError){
-                Toast.makeText(view.context, state.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        friendsViewModel.sendRequestState.observe(viewLifecycleOwner, findGameObserver)
     }
 
     override fun onDestroyView() {

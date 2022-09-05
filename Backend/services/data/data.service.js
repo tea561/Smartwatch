@@ -44,7 +44,7 @@ module.exports = {
 					`select last(*) from "pulse" where userID='${req.query.userID}'`
 				);
 				const sleepHours = await this.influx.query(
-					`select sum(value) from "sleep-hours" where time > now() - 24h and userID ='${req.query.userID}'`
+					`select sum(value) from "sleep-hours" where time > now() - 24h and userID ='${req.query.userID}' group by time(1d)`
 				);
 				const steps = await this.influx.query(
 					`select sum(value) from "steps" where time > now() - 24h and userID ='${req.query.userID}'`
@@ -59,7 +59,7 @@ module.exports = {
 					sys: sysPressure[0].last_value,
 					dias: diasPressure[0].last_value,
 					pulse: pulse[0].last_value,
-					sleepHours: (sleepHours[0] == undefined) ? 0 : sleepHours[0].sum,
+					sleepHours: (sleepHours[sleepHours.length - 1] == undefined) ? 0 : sleepHours[sleepHours.length - 1].sum,
 					steps: (steps[0] == undefined) ? 0 : steps[0].sum,
 					calories: (calories[0] == undefined) ? 0 : calories[0].sum,
 					userID: req.query.userID,
@@ -149,9 +149,9 @@ module.exports = {
 		async getDailySum(req, res) {
 			try{
 				const dailySum = await this.influx.query(
-					`select sum(value) from "${req.query.param}" where time > now() - 24h and userID ='${req.query.userID}'`
+					`select sum(value) from "${req.query.param}" where time > now() - 24h and userID ='${req.query.userID}' group by time(1d)`
 				)
-				//console.log(sleepHours)
+				console.log(dailySum)
 				if(dailySum == [])
 				{
 					res.status(404);
@@ -159,12 +159,14 @@ module.exports = {
 					return null;
 				}
 				var resultArr = []
-				dailySum.forEach(element => {
-					var newElement = {sleepHours: null, timestamp: null};
-					newElement.value = element.sum
-					newElement.time = element.time
+				if(dailySum != undefined)
+				{
+					if(dailySum[dailySum.length - 1] != undefined)
+					var newElement = {value: null, time: null};
+					newElement.value = dailySum[dailySum.length - 1].sum
+					newElement.time = dailySum[dailySum.length - 1].time
 					resultArr.push(newElement)
-				})
+				}
 				res.send(resultArr)
 			}
 			catch(err){
@@ -253,6 +255,9 @@ module.exports = {
 					return null;
 			}
 			try {
+				console.log(req.body.timestamp)
+				let time = new Date(req.body.timestamp)
+				console.log(time)
 				this.influx.writePoints([{
 					measurement: 'sleep-hours',
 					tags: {

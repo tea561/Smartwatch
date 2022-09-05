@@ -2,10 +2,7 @@ package elfak.mosis.health.ui.home
 
 import android.Manifest
 import android.app.ActivityManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -64,6 +61,14 @@ class HomeFragment : Fragment() {
     private val heartRateViewModel: HeartRateViewModel by activityViewModels()
     private val sleepViewModel: SleepViewModel by activityViewModels()
     private val caloriesViewModel: CaloriesViewModel by activityViewModels()
+    private lateinit var prefs: SharedPreferences
+
+    private val listener =
+        OnSharedPreferenceChangeListener { prefs, key ->
+            Log.i("STEPS", "LISTENER")
+            binding.progressBar.progress = prefs.stepCount / 100
+            binding.textViewProgress.text = prefs.stepCount.toString()
+        }
 
 
     private var values: MutableList<String> = mutableListOf("0", "0", "0", "0")
@@ -94,6 +99,8 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         val homeAdapter = HomeAdapter(requireContext(), values)
         recyclerView.adapter = homeAdapter
+        val textUser = view.findViewById<TextView>(R.id.text2)
+        textUser.text = "Hello, ${userViewModel.currentUser?.username}"
 
         //http
         val queue = Volley.newRequestQueue(view.context)
@@ -114,7 +121,7 @@ class HomeFragment : Fragment() {
                 var sleepHours : Double = 0.0
                 if (response["sleepHours"] is Double)
                     sleepHours = response["sleepHours"] as Double
-                else
+                else if(response["sleepHours"] is Int)
                     (response["sleepHours"] as Int).toDouble()
 
                 val minutes = sleepHours * 60.0
@@ -127,10 +134,10 @@ class HomeFragment : Fragment() {
                 sleepViewModel.updateLastValue(sleepHoursString, time.toString())
                 caloriesViewModel.updateLastValue(calories.toFloat(), time.toString())
 
-                values[0] = pulse.toString()
+                values[0] = "${pulse.toString()} bpm"
                 values[1] = sleepHoursString
-                values[2] = "${sys.toString()}/${dias.toString()}"
-                values[3] = calories.toString()
+                values[2] = "${sys.toString()}/${dias.toString()} mmHg"
+                values[3] = "${calories.toString()} kcal"
                 homeAdapter.notifyItemChanged(0)
                 homeAdapter.notifyItemChanged(1)
                 homeAdapter.notifyItemChanged(2)
@@ -175,15 +182,9 @@ class HomeFragment : Fragment() {
 //        }
 
 
-        val prefs = SharedPreferencesHelper.customPreference(view.context, "First time")
+        prefs = SharedPreferencesHelper.customPreference(view.context, "First time")
         //prefs.firstTime = true
 
-        val listener =
-            OnSharedPreferenceChangeListener { prefs, key ->
-                Log.i("STEPS", "LISTENER")
-                binding.progressBar.progress = prefs.stepCount / 100
-                binding.textViewProgress.text = prefs.stepCount.toString()
-            }
 
         prefs.registerOnSharedPreferenceChangeListener(listener)
 
@@ -200,7 +201,7 @@ class HomeFragment : Fragment() {
             val usernameHeader: TextView = headerView.findViewById(R.id.textViewUsername)
 
             val headerImgProfile: ImageView = headerView.findViewById(R.id.imageViewProfile)
-            usernameHeader.text = userViewModel.currentUser!!.username
+            usernameHeader.text = "${userViewModel.currentUser!!.username} #${userViewModel.currentUser!!._id}"
 
             val executor = Executors.newSingleThreadExecutor()
             val handler = Handler(Looper.getMainLooper())
@@ -221,6 +222,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
         _binding = null
     }
 

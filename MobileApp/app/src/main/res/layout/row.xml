@@ -22,19 +22,22 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/bckg4" />
+            android:src="@drawable/bckg6" />
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="#aa7400b8"
+        android:background="#cc56CFE1"
         android:id="@+id/back"
         android:layout_height="match_parent">
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@drawable/blooddonar"
-            android:id="@+id/image1"
-            android:padding="20dp"
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="193dp"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Sleep"
+            android:textColor="@color/white"
+            android:textSize="14sp"
             app:tint="#fff" />
 
         <TextView
@@ -43,8 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="20dp"
-            android:fontFamily="@font/baloo2_regular"
-            android:lineSpacingExtra="-8dp"
+            android:fontFamily="sans-serif"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="Donate Blood every year"

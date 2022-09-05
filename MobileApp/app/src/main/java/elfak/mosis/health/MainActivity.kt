@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         val alarmManager: AlarmManager = this.getSystemService(ALARM_SERVICE) as AlarmManager
 
-        val time = 180 //24 hours
+        val time = 86400 //24 hours
 
 
 

@@ -52,7 +52,7 @@ def on_message(client, userdata, msg):
             'userID': param['userID']
         }
     elif(msg.topic == 'analysis/avg-pulse'):
-        client_grpc.get_url_pulse('Avg pulse', param)
+        client_grpc.get_url_pulse('Average pulse', param)
         entry = {
             'event': 'Average pulse',
             'avg': param['pulse'],

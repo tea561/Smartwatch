@@ -3,10 +3,10 @@ syntax = "proto3";
 package notification;
 
 service Notification {
+  
   rpc NotifyEventVitals (NotifyRequestVitals) returns (NotifyReply);
   rpc NotifyEventCalories (NotifyRequestCalories) returns (NotifyReply);
   rpc NotifyEventPulse (NotifyRequestPulse) returns (NotifyReply);
-
 
 }
 

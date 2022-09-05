@@ -34,8 +34,6 @@
         android:name="elfak.mosis.health.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" >
-        <action android:id="@+id/action_HomeFragment_to_GalleryFragment"
-            app:destination="@id/nav_gallery" />
 
         <action android:id="@+id/action_HomeFragment_to_SleepFragment"
             app:destination="@id/SleepFragment" />
@@ -51,18 +49,6 @@
         <action android:id="@+id/action_HomeFragment_to_StepsFragment"
             app:destination="@id/StepsFragment" />
     </fragment>
-
-    <fragment
-        android:id="@+id/nav_gallery"
-        android:name="elfak.mosis.health.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="elfak.mosis.health.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/SleepFragment"
@@ -92,7 +78,7 @@
     <fragment
         android:id="@+id/CaloriesFragment"
         android:name="elfak.mosis.health.ui.calories.CaloriesFragment"
-        android:label="Calories burnt"
+        android:label="Calories"
         tools:layout="@layout/fragment_calories" />
 
     <fragment

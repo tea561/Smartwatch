@@ -9,6 +9,8 @@ object SharedPreferencesHelper {
     val STEP_COUNT = "STEP_COUNT"
     val FIRST_TIME = "FIRST_TIME"
     val _ID = "_ID"
+    val AVG_PULSE = "AVG_PULSE"
+    val MAX_PULSE = "MAX_PULSE"
 
     fun defaultPreference(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -50,5 +52,18 @@ object SharedPreferencesHelper {
         set(value){
             editPref { it.putInt(_ID, value) }
         }
+
+    var SharedPreferences.max_pulse
+        get() = getFloat(MAX_PULSE, 0.0f)
+        set(value){
+            editPref { it.putFloat(MAX_PULSE, value)}
+        }
+
+    var SharedPreferences.avg_pulse
+        get() = getFloat(AVG_PULSE, 0.0f)
+        set(value){
+            editPref { it.putFloat(AVG_PULSE, value)}
+        }
+
 
 }

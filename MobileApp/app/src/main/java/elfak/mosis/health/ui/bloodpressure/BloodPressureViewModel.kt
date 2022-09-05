@@ -154,7 +154,7 @@ class BloodPressureViewModel : ViewModel() {
                         if(value is Double)
                             weeklyDiasEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
                         else if (value is Int)
-                            weeklyDiasEntries.add(Entry(i.toFloat(), (value as Double).toFloat()))
+                            weeklyDiasEntries.add(Entry(i.toFloat(), (value as Int).toFloat()))
 
                     }
                 }

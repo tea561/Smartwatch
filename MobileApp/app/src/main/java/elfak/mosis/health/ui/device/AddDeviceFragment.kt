@@ -69,7 +69,7 @@ class AddDeviceFragment : Fragment() {
                 checkBTState()
             }
             else {
-                findNavController()
+                findNavController().navigate(R.id.action_AddNewDeviceFragment_to_BluetoothClientFragment)
             }
         }
     }

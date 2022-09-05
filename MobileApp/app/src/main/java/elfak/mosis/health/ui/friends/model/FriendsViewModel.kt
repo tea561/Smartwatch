@@ -72,6 +72,7 @@ class FriendsViewModel : ViewModel() {
     }
 
     fun addFriend(friendId: String, context: Context) {
+        _sendRequestState.value = SendRequestState.Idle
         val prefs = SharedPreferencesHelper.customPreference(context, "First time")
         //http
         val queue = Volley.newRequestQueue(context)

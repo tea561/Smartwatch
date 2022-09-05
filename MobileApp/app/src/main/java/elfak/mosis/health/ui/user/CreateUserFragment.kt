@@ -68,7 +68,7 @@ class CreateUserFragment : Fragment() {
                         val usernameHeader: TextView = headerView.findViewById(R.id.textViewUsername)
 
                         val headerImgProfile: ImageView = headerView.findViewById(R.id.imageViewProfile)
-                        usernameHeader.text = userViewModel.currentUser!!.username
+                        usernameHeader.text = "${userViewModel.currentUser!!.username} #${userViewModel.currentUser!!._id}"
 
                         Glide.with(headerView).load(userViewModel.currentUser!!.imgSrc).into(headerImgProfile)
 

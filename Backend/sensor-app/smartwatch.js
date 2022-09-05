@@ -42,7 +42,7 @@ const interval = setInterval(() => {
       }).catch((err) => {
           console.error(err);
       });
-}, 5000);
+}, 10000);
 
 let sleepRecords = [];
 let currentSleepRecord = 0;
@@ -72,7 +72,7 @@ const sleepInterval = setInterval(() => {
     }).catch((err) => {
       console.error(err);
   });
-}, 500000);
+}, 10000);
 
 let exerciseRecords = [];
 let currentExerciesRecord = 0;

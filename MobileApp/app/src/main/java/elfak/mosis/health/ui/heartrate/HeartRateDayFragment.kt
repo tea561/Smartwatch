@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -17,6 +18,9 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import elfak.mosis.health.R
 import elfak.mosis.health.ui.user.model.UserViewModel
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.avg_pulse
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.max_pulse
 
 class HeartRateDayFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels()
@@ -37,6 +41,13 @@ class HeartRateDayFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val prefs = SharedPreferencesHelper.customPreference(view.context, "First time")
+        val avgVal = view.findViewById<TextView>(R.id.textViewDailyAvgVal)
+        avgVal.text = prefs.avg_pulse.toString()
+        val maxVal = view.findViewById<TextView>(R.id.textViewDailyMaxVal)
+        maxVal.text = prefs.max_pulse.toString()
+
+
         val chart = view.findViewById<LineChart>(R.id.bpm_day_chart)
         userViewModel.currentUser?.let { heartRateViewModel.getDailyData(view.context, it._id) }
 
@@ -56,11 +67,11 @@ class HeartRateDayFragment : Fragment() {
                 val dataEntries = heartRateViewModel.dailyEntries
 
                 val dataSet: LineDataSet = LineDataSet(dataEntries, "label")
-                dataSet.color = Color.parseColor("#ff084a")
+                dataSet.color = Color.parseColor("#56CFE1")
 
                 dataSet.lineWidth = 2f
                 dataSet.setDrawValues(false)
-                dataSet.setCircleColor(Color.parseColor("#ff084a"))
+                dataSet.setCircleColor(Color.parseColor("#56CFE1"))
 
                 dataSet.setDrawCircleHole(false)
                 dataSet.circleRadius = 5f

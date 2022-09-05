@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -17,6 +18,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import elfak.mosis.health.R
 import elfak.mosis.health.ui.sleep.MyXAxisFormatter
 import elfak.mosis.health.ui.user.model.UserViewModel
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.avg_pulse
+import elfak.mosis.health.utils.helpers.SharedPreferencesHelper.max_pulse
 
 class HeartRateWeekFragment : Fragment() {
 
@@ -57,10 +61,10 @@ class HeartRateWeekFragment : Fragment() {
                 val dataEntries = heartRateViewModel.weeklyEntries
 
                 val dataSet: LineDataSet = LineDataSet(dataEntries, "label")
-                dataSet.color = Color.parseColor("#ff084a")
+                dataSet.color = Color.parseColor("#56CFE1")
                 dataSet.lineWidth = 2f
                 dataSet.setDrawValues(false)
-                dataSet.setCircleColor(Color.parseColor("#ff084a"))
+                dataSet.setCircleColor(Color.parseColor("#56CFE1"))
                 dataSet.setDrawCircleHole(false)
                 dataSet.circleRadius = 5f
                 dataSet.setDrawFilled(true)

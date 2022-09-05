@@ -77,7 +77,7 @@ class SleepFragment : Fragment() {
                 val dataEntries = sleepViewModel.weeklySleepEntries
 
                 val dataSet = BarDataSet(dataEntries, "Label")
-                dataSet.color = Color.parseColor("#efdd32")
+                dataSet.color = Color.parseColor("#56CFE1")
                 dataSet.valueTextColor = ContextCompat.getColor(view.context, R.color.black)
                 dataSet.valueFormatter = SleepHoursFormatter()
                 dataSet.valueTextSize = 10f
