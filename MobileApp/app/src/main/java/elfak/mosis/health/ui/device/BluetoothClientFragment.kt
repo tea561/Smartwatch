@@ -87,7 +87,7 @@ class BluetoothClientFragment : Fragment() {
 //                    val deviceHardwareAddress = device.address // MAC address
 //                    bluetoothDevices.add(device)
 //                }
-                //bluetoothDevices?.clear()
+                bluetoothDevices?.clear()
                 listAdapter?.clear()
                 bluetoothAdapter.startDiscovery()
 

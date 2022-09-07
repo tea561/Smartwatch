@@ -34,7 +34,6 @@ class MyFriendRecyclerViewAdapter(private val onClick: (User) -> Unit,
             ),
             onClick
         )
-
     }
 
     fun setData(newData:List<User>){

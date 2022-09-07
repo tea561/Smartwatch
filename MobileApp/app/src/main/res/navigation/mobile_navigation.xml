@@ -82,6 +82,12 @@
         tools:layout="@layout/fragment_calories" />
 
     <fragment
+        android:id="@+id/BluetoothleFragment"
+        android:name="elfak.mosis.health.ui.device.BluetoothleFragment"
+        android:label="BLE fragment"
+        tools:layout="@layout/fragment_bluetoothle" />
+
+    <fragment
         android:id="@+id/BluetoothClientFragment"
         android:name="elfak.mosis.health.ui.device.BluetoothClientFragment"
         android:label="Bluetooth client"
@@ -100,6 +106,8 @@
         tools:layout="@layout/fragment_add_device" >
         <action android:id="@+id/action_AddNewDeviceFragment_to_BluetoothClientFragment"
             app:destination="@id/BluetoothClientFragment" />
+        <action android:id="@+id/action_AddNewDeviceFragment_to_BleFragment"
+            app:destination="@id/BluetoothleFragment" />
     </fragment>
 
     <fragment

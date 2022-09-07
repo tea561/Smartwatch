@@ -50,7 +50,6 @@ class FCMService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d("Firebase", "From: ${remoteMessage.from}")
 
         // Check if message contains a data payload.
@@ -70,9 +69,6 @@ class FCMService : FirebaseMessagingService() {
             Log.d(TAG, "Message Notification Body: ${it.body}")
             sendNotification(this, it.body.toString(), R.drawable.heart)
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
 
     override fun onDeletedMessages() {
